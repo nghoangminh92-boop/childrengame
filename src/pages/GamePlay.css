@@ -1,147 +1,269 @@
-@keyframes explodeAnim {
-  0% {
-    opacity: 0;
-    transform: translateX(-50%) scale(0.3);
-  }
-  40% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1.2);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50%) scale(1.6);
-  }
-}
-
-.runner-track {
-  position: relative;
-  width: 100%;
-  max-width: 720px;
-  height: 160px;
-  margin: 16px auto 24px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #1a1a2e, #16213e 60%, #0f3460);
-  box-shadow:
-    inset 0 0 40px rgba(0, 0, 0, 0.4),
-    0 8px 24px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  touch-action: none;
-}
-
-/* Vạch nền chạy để tạo cảm giác chuyển động */
-.runner-track::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.06) 0px,
-    rgba(255, 255, 255, 0.06) 2px,
-    transparent 2px,
-    transparent 40px
-  );
-  animation: trackScroll 1.2s linear infinite;
-}
-
-@keyframes trackScroll {
-  from { background-position-x: 0; }
-  to { background-position-x: -40px; }
-}
-
-.runner-robot {
-  position: absolute;
-  bottom: 8px;
-  left: 12%;
-  width: 80px;
-  height: 80px;
+/* ===================== GAME PLAY ===================== */
+.game-header {
+  max-width: 760px;
+  margin: 0 auto 20px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hearts {
+  display: flex;
+  gap: 4px;
+  font-size: 1.4rem;
+}
+
+.heart-lost {
+  animation: heartPop 0.4s ease;
+  opacity: 0.25;
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+.progress-bar-track {
+  flex: 1;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+  transition: width 0.4s ease;
+}
+
+.score-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.18);
+  color: var(--color-warning);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.avatar-stage {
+  display: flex;
   justify-content: center;
-  z-index: 2;
+  margin: 8px 0 4px;
 }
 
-.runner-robot img {
+.avatar-emoji {
+  font-size: 3.2rem;
+  transition: transform 0.25s ease;
+}
+
+.avatar-emoji.jump {
+  animation: avatarJump 0.5s ease;
+}
+
+.avatar-emoji.sad {
+  animation: avatarSad 0.5s ease;
+}
+
+@keyframes avatarJump {
+  0% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-24px) scale(1.1); }
+  70% { transform: translateY(4px) scale(0.96); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes avatarSad {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(4px) rotate(-6deg); }
+  75% { transform: translateY(4px) rotate(6deg); }
+}
+
+.question-card {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px clamp(20px, 4vw, 48px);
+  text-align: center;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.question-card.flash-correct {
+  animation: flashGreen 0.6s ease;
+}
+
+.question-card.flash-wrong {
+  animation: flashRed 0.6s ease, shake 0.5s ease;
+}
+
+@keyframes flashGreen {
+  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); background: rgba(52, 211, 153, 0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+@keyframes flashRed {
+  0% { background: rgba(251, 113, 133, 0.28); }
+  100% { background: var(--glass-bg); }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-8px); }
+  40%, 60% { transform: translateX(8px); }
+}
+
+.question-text {
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  margin-bottom: 32px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.option-btn {
+  padding: 18px 16px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  background: rgba(124, 92, 255, 0.15);
+}
+
+.option-btn.correct {
+  background: rgba(52, 211, 153, 0.25);
+  border-color: var(--color-success);
+}
+
+.option-btn.wrong {
+  background: rgba(251, 113, 133, 0.25);
+  border-color: var(--color-danger);
+}
+
+.option-btn:disabled {
+  cursor: not-allowed;
+}
+
+.option-icon {
+  font-size: 1.3rem;
+}
+
+.check-bounce {
+  display: inline-block;
+  animation: bounceCheck 0.5s ease;
+}
+
+@keyframes bounceCheck {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ===================== CONFETTI ===================== */
+.confetti-piece {
+  position: fixed;
+  top: -10px;
+  width: 8px;
+  height: 14px;
+  opacity: 0.9;
+  z-index: 50;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(105vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+/* ===================== RESULT / LEVEL COMPLETE ===================== */
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 16, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  padding: 20px;
+}
+
+.result-card {
+  max-width: 420px;
   width: 100%;
+  padding: 40px 32px;
+  text-align: center;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.result-card .stars {
+  font-size: 2.4rem;
+  margin: 16px 0;
+}
+
+.star-fly {
+  display: inline-block;
+  animation: starFly 0.6s ease backwards;
+}
+
+@keyframes starFly {
+  0% { transform: translateY(-40px) scale(0) rotate(-90deg); opacity: 0; }
+  100% { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+}
+
+.result-progress-track {
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.result-progress-fill {
   height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  background: linear-gradient(90deg, var(--color-secondary), var(--color-success));
+  width: 0%;
+  animation: fillProgress 1s ease forwards 0.3s;
 }
 
-.runner-robot--jump img {
-  transform: translateY(-44px) scale(1.05) rotate(-6deg);
+@keyframes fillProgress {
+  to { width: var(--target-width, 70%); }
 }
 
-.runner-robot--hit img {
-  transform: translateY(4px) scale(0.95);
-  filter: grayscale(60%) brightness(0.7) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+.unlock-badge {
+  font-size: 2rem;
+  animation: unlockPop 0.6s ease 0.8s backwards;
 }
 
-.runner-obstacle {
-  position: absolute;
-  bottom: 8px;
-  right: -80px;
-  width: 64px;
-  height: 64px;
-  z-index: 1;
-  animation: obstacleMove 1.2s linear forwards;
+@keyframes unlockPop {
+  0% { transform: scale(0) rotate(-30deg); }
+  100% { transform: scale(1) rotate(0); }
 }
 
-.runner-obstacle img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
-}
-
-@keyframes obstacleMove {
-  0% {
-    right: -80px;
-  }
-  100% {
-    right: 70%;
-  }
-}
-
-/* ===== Responsive cho điện thoại ===== */
-@media (max-width: 600px) {
-  .runner-track {
-    height: 120px;
-    border-radius: 12px;
-    margin: 12px auto 16px;
-  }
-
-  .runner-robot,
-  .runner-robot img {
-    width: 56px;
-    height: 56px;
-  }
-
-  .runner-robot--jump img {
-    transform: translateY(-30px) scale(1.05) rotate(-6deg);
-  }
-
-  .runner-obstacle,
-  .runner-obstacle img {
-    width: 44px;
-    height: 44px;
-  }
-}
-
-@media (max-width: 380px) {
-  .runner-track {
-    height: 100px;
-  }
-
-  .runner-robot,
-  .runner-robot img {
-    width: 46px;
-    height: 46px;
-  }
-
-  .runner-obstacle,
-  .runner-obstacle img {
-    width: 36px;
-    height: 36px;
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .options-grid {
+    grid-template-columns: 1fr;
   }
 }

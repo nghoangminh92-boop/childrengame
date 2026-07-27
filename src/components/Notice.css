@@ -1,0 +1,88 @@
+/* ===================== NOTICE BANNER (component dùng chung — Home, Header...) ===================== */
+.notice-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 640px;
+  margin: 0 auto 24px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  text-align: left;
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.notice-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.notice-content {
+  flex: 1;
+}
+
+.notice-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.notice-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.notice-date {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.notice-title {
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.notice-description {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #4b5563);
+  margin: 0;
+}
+
+.notice-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: inherit;
+  opacity: 0.6;
+  padding: 4px;
+}
+.notice-close:hover {
+  opacity: 1;
+}
+
+/* Biến thể theo loại thông báo */
+.notice--update {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #1d4ed8;
+}
+.notice--warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+.notice--maintenance {
+  background: rgba(107, 114, 128, 0.1);
+  border-color: rgba(107, 114, 128, 0.25);
+  color: #374151;
+}
+.notice--event {
+  background: rgba(236, 72, 153, 0.08);
+  border-color: rgba(236, 72, 153, 0.25);
+  color: #be185d;
+}
