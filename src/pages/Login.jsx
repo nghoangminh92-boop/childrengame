@@ -32,7 +32,9 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="login-mascot">🤖</div>
+        <div className="login-mascot">
+          <img src="/assets/logo.png" alt="" className="login-mascot-logo" />
+        </div>
 
         <span className="login-star login-star--1">✦</span>
         <span className="login-star login-star--2">✦</span>
@@ -42,7 +44,7 @@ const Login = () => {
 
       {/* Thẻ đăng nhập */}
       <div className="login-card">
-        <p className="login-eyebrow">Chilren Game</p>
+        <p className="login-eyebrow">Children Game</p>
         <h1 id="login-title" className="login-title">
           Chào mừng bạn
           <br />

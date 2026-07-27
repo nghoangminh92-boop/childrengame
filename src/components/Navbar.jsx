@@ -3,7 +3,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { SUBJECTS } from "../data/subjects.js";
 import SoundToggle from "./SoundToggle.jsx";
-import Logo from "./Logo.jsx";
 import "./navbar.css";
 
 const AVATAR_EMOJI = {
@@ -22,7 +21,6 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // Đóng dropdown avatar khi bấm ra ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -33,7 +31,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Đóng menu mobile mỗi khi chuyển route
   useEffect(() => {
     setMobileOpen(false);
   }, [navigate]);
@@ -47,11 +44,10 @@ const Navbar = () => {
     <header className="nav-header">
       <nav className="navbar" aria-label="Điều hướng chính">
         <Link to="/" className="navbar__brand">
-          <Logo size={32} />
+          <img src="/assets/logo.png" alt="Children Game" className="navbar__brand-logo" />
           <span className="navbar__brand-text">Children Game</span>
         </Link>
 
-        {/* Menu môn học — chỉ hiện khi đã đăng nhập, ẩn trên mobile (nằm trong menu thả xuống) */}
         {user && (
           <div className="navbar__subjects">
             {SUBJECTS.map((subject) => (
@@ -116,7 +112,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Nút hamburger chỉ hiện trên mobile */}
           <button
             type="button"
             className={"navbar__hamburger" + (mobileOpen ? " is-open" : "")}
@@ -131,7 +126,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Menu mobile thả xuống */}
       {mobileOpen && (
         <div className="navbar__mobile-menu">
           {user &&

@@ -11,7 +11,7 @@ import {
   IconTrophy,
   IconTarget,
   IconKid,
-} from "../components/icons/Icons.jsx";
+} from "../components/icon/Icons.jsx";
 import "./Home.css";
 
 const SUBJECTS = [

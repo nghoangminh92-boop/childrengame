@@ -76,6 +76,14 @@
   animation: mascotFloat 3s ease-in-out infinite;
 }
 
+/* ⭐ Style cho logo ảnh bên trong login-mascot */
+.login-mascot-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
 @keyframes mascotFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
