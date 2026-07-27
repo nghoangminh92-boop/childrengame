@@ -1,3 +1,4 @@
+import "../pages/Gameplay.css";
 const OPTION_LETTERS = ["A", "B", "C", "D"];
 
 const QuestionCard = ({ question, selected, correctAnswer, revealed, flashState, onSelect }) => {

@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import QuestionCard from "../components/QuestionCard.jsx";
 import HeartsDisplay from "../components/HeartsDisplay.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
-
+import "../Gameplay.css";
 const MAX_LIVES = 3;
 const POINTS_PER_CORRECT = 10;
 
