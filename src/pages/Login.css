@@ -1,0 +1,220 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+  padding: 48px 24px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* ===== Khu vực quỹ đạo trang trí ===== */
+.login-orbit {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.orbit-ring {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border: 1px dashed var(--color-border, rgba(255, 255, 255, 0.2));
+  border-radius: 50%;
+  animation: orbitSpin 18s linear infinite;
+}
+
+@keyframes orbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.orbit-badge {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.orbit-badge-inner {
+  font-size: 1.5rem;
+  animation: counterSpin 18s linear infinite;
+}
+
+@keyframes counterSpin {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.orbit-badge--math {
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.orbit-badge--english {
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.login-mascot {
+  font-size: 4rem;
+  z-index: 1;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  animation: mascotFloat 3s ease-in-out infinite;
+}
+
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.login-star {
+  position: absolute;
+  color: var(--sakura-petal-a, #f5a3b3);
+  font-size: 1rem;
+  opacity: 0.7;
+  animation: starTwinkle 2.4s ease-in-out infinite;
+}
+
+.login-star--1 { top: 10%; left: 5%; animation-delay: 0s; }
+.login-star--2 { top: 20%; right: 8%; animation-delay: 0.6s; }
+.login-star--3 { bottom: 15%; left: 10%; animation-delay: 1.2s; }
+.login-star--4 { bottom: 25%; right: 5%; animation-delay: 1.8s; }
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+/* ===== Thẻ đăng nhập ===== */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+  border-radius: 24px;
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  text-align: center;
+  animation: loginFadeIn 0.5s ease-out;
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sakura-petal-a, #f5a3b3);
+  margin-bottom: 12px;
+}
+
+.login-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-ink, #f5f5f5);
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.login-subtitle {
+  font-size: 0.92rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.6));
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.login-google-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.login-trust {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.45));
+  margin-bottom: 8px;
+}
+
+.login-error {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #f87171;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.login-footnote {
+  font-size: 0.8rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.4));
+  margin-top: 24px;
+  line-height: 1.5;
+}
+
+/* ===== Light theme ===== */
+[data-theme="light"] .login-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+[data-theme="light"] .login-title {
+  color: var(--color-ink, #202124);
+}
+
+[data-theme="light"] .orbit-badge {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .orbit-ring {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .login-page {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .login-orbit {
+    width: 180px;
+    height: 180px;
+  }
+
+  .orbit-ring {
+    width: 150px;
+    height: 150px;
+  }
+
+  .login-mascot {
+    font-size: 3rem;
+  }
+}

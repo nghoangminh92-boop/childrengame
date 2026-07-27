@@ -1,0 +1,74 @@
+@keyframes explodeAnim {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.3);
+  }
+  40% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.6);
+  }
+}
+.runner-track {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  margin: 16px auto 24px;
+  border-radius: 12px;
+  background: linear-gradient(to right, #222, #333);
+  overflow: hidden;
+}
+
+.runner-robot {
+  position: absolute;
+  bottom: 8px;
+  left: 12%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.runner-robot img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.runner-robot--jump img {
+  transform: translateY(-40px) scale(1.05);
+}
+
+.runner-robot--hit img {
+  transform: translateY(4px) scale(0.95);
+  filter: grayscale(40%) brightness(0.8);
+}
+
+.runner-obstacle {
+  position: absolute;
+  bottom: 8px;
+  right: -80px;
+  width: 64px;
+  height: 64px;
+  animation: obstacleMove 1.2s linear forwards;
+}
+
+.runner-obstacle img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+@keyframes obstacleMove {
+  0% {
+    right: -80px;
+  }
+  100% {
+    right: 70%;
+  }
+}
