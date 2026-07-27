@@ -42,7 +42,7 @@ const Login = () => {
 
       {/* Thẻ đăng nhập */}
       <div className="login-card">
-        <p className="login-eyebrow">🎮 EduGame</p>
+        <p className="login-eyebrow">Chilren Game</p>
         <h1 id="login-title" className="login-title">
           Chào mừng bạn
           <br />

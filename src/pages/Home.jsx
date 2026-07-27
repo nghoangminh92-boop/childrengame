@@ -2,21 +2,61 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import api from "../api/axios";
-import "./Home.css"; // thêm dòng này
+import {
+  IconMath,
+  IconEnglish,
+  IconController,
+  IconBadge,
+  IconStreak,
+  IconTrophy,
+  IconTarget,
+  IconKid,
+} from "../components/icons/Icons.jsx";
+import "./Home.css";
 
 const SUBJECTS = [
   {
     to: "/levels/math",
-    emoji: "🧮",
+    Icon: IconMath,
     title: "Toán học",
     description: "Chinh phục 10 level từ dễ đến khó",
   },
   {
     to: "/levels/english",
-    emoji: "🔤",
+    Icon: IconEnglish,
     title: "Tiếng Anh",
     description: "Học từ vựng & ngữ pháp cơ bản",
   },
+];
+
+const FEATURES = [
+  {
+    Icon: IconController,
+    title: "Học qua trò chơi",
+    description: "3 chế độ chơi: Quiz, Runner, Adventure — mỗi bài học là một thử thách thú vị.",
+  },
+  {
+    Icon: IconBadge,
+    title: "Huy hiệu & thành tích",
+    description: "Ghi nhận mỗi cột mốc bé đạt được, từ nửa chặng đường đến nhà vô địch.",
+  },
+  {
+    Icon: IconStreak,
+    title: "Streak mỗi ngày",
+    description: "Duy trì chuỗi ngày học liên tiếp để nhận thưởng và giữ động lực học tập.",
+  },
+  {
+    Icon: IconTrophy,
+    title: "Bảng xếp hạng",
+    description: "So tài với bạn bè, xem ai là người dẫn đầu bảng điểm mỗi tuần.",
+  },
+];
+
+const HOW_IT_WORKS = [
+  { step: "1", text: "Đăng nhập nhanh bằng tài khoản Google, không cần mật khẩu" },
+  { step: "2", text: "Chọn môn học và level phù hợp với trình độ" },
+  { step: "3", text: "Trả lời câu hỏi, vượt qua thử thách, thu thập sao và huy hiệu" },
+  { step: "4", text: "Theo dõi tiến bộ, mở khóa level mới mỗi ngày" },
 ];
 
 // Cấu hình style/icon theo loại thông báo
@@ -81,18 +121,32 @@ const AnnouncementNotice = ({ notice, onDismiss }) => {
   );
 };
 
-const SubjectCard = ({ to, emoji, title, description }) => (
+const SubjectCard = ({ to, Icon, title, description }) => (
   <Link to={to} className="glass-card subject-card" aria-label={`Vào học ${title}`}>
-    <div className="emoji" aria-hidden="true">
-      {emoji}
-    </div>
+    <Icon size={44} className="subject-icon" />
     <h3>{title}</h3>
     <p>{description}</p>
   </Link>
 );
 
+const SubjectPreviewCard = ({ Icon, title, description }) => (
+  <div className="glass-card subject-card subject-card--preview">
+    <Icon size={44} className="subject-icon" />
+    <h3>{title}</h3>
+    <p>{description}</p>
+    <span className="subject-card-lock">Đăng nhập để bắt đầu</span>
+  </div>
+);
+
+const FeatureCard = ({ Icon, title, description }) => (
+  <div className="glass-card feature-card">
+    <Icon size={36} className="feature-icon-svg" />
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+);
+
 const Home = () => {
-  // AuthContext của bạn không có `loading` — user đã sẵn sàng ngay từ lần render đầu
   const { user } = useAuth();
 
   const [stats, setStats] = useState(null);
@@ -106,8 +160,6 @@ const Home = () => {
 
     const fetchHomeData = async () => {
       try {
-        // Nếu backend CHƯA có 2 route này, request sẽ lỗi (404) và rơi vào catch bên dưới
-        // → phần thông báo/highlights sẽ tự ẩn, không làm vỡ giao diện.
         const [statsRes, noticeRes] = await Promise.all([
           api.get("/stats/summary"),
           api.get("/notices/latest"),
@@ -147,10 +199,10 @@ const Home = () => {
 
   const highlights = stats
     ? [
-        { icon: "⭐", label: `${formatNumber(stats.totalStars)} sao đã trao` },
-        { icon: "🏅", label: `${formatNumber(stats.totalBadges)} huy hiệu thành tích` },
-        { icon: "🎯", label: `${stats.totalLevels} level thử thách` },
-        { icon: "👦", label: `${formatNumber(stats.totalStudents)} bé đang học` },
+        { Icon: IconTrophy, label: `${formatNumber(stats.totalStars)} sao đã trao` },
+        { Icon: IconBadge, label: `${formatNumber(stats.totalBadges)} huy hiệu thành tích` },
+        { Icon: IconTarget, label: `${stats.totalLevels} level thử thách` },
+        { Icon: IconKid, label: `${formatNumber(stats.totalStudents)} bé đang học` },
       ]
     : [];
 
@@ -160,21 +212,19 @@ const Home = () => {
         <AnnouncementNotice notice={notice} onDismiss={handleDismissNotice} />
       )}
 
-      <h1 id="home-title">
-        Học mà chơi, chơi mà học! <span aria-hidden="true">🎮✨</span>
-      </h1>
+      <h1 id="home-title">Học mà chơi, chơi mà học!</h1>
 
       <p className="hero-subtitle">
         <strong>Children Game</strong> giúp bé chinh phục Toán học và Tiếng Anh
-        qua từng level thử thách, đầy sao ⭐, huy hiệu 🏅 và niềm vui! Phù hợp
-        cho bé từ 6–12 tuổi, học theo lộ trình cá nhân hóa.
+        qua từng level thử thách, đầy sao và huy hiệu! Phù hợp cho bé từ 6–12
+        tuổi, học theo lộ trình cá nhân hóa.
       </p>
 
       {!dataLoading && !dataError && highlights.length > 0 && (
         <ul className="hero-highlights">
           {highlights.map((item) => (
             <li key={item.label} className="highlight-item">
-              <span aria-hidden="true">{item.icon}</span>
+              <item.Icon size={20} />
               <span>{item.label}</span>
             </li>
           ))}
@@ -188,11 +238,55 @@ const Home = () => {
           ))}
         </div>
       ) : (
-        <div className="hero-actions">
-          <Link to="/login" className="btn btn-primary">
-            Bắt đầu ngay 🚀
-          </Link>
-        </div>
+        <>
+          <div className="hero-actions">
+            <Link to="/login" className="btn btn-primary">
+              Bắt đầu ngay
+            </Link>
+          </div>
+
+          {/* ===== Preview môn học ===== */}
+          <div className="home-section">
+            <h2 className="home-section-title">Khám phá các môn học</h2>
+            <div className="subject-grid subject-grid--preview">
+              {SUBJECTS.map((subject) => (
+                <SubjectPreviewCard key={subject.to} {...subject} />
+              ))}
+            </div>
+          </div>
+
+          {/* ===== Tính năng nổi bật ===== */}
+          <div className="home-section">
+            <h2 className="home-section-title">Vì sao bé sẽ thích Children Game?</h2>
+            <div className="feature-grid">
+              {FEATURES.map((feature) => (
+                <FeatureCard key={feature.title} {...feature} />
+              ))}
+            </div>
+          </div>
+
+          {/* ===== Cách hoạt động ===== */}
+          <div className="home-section">
+            <h2 className="home-section-title">Bắt đầu chỉ với 4 bước</h2>
+            <div className="steps-grid">
+              {HOW_IT_WORKS.map((item) => (
+                <div key={item.step} className="glass-card step-card">
+                  <div className="step-number">{item.step}</div>
+                  <p>{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ===== CTA cuối trang ===== */}
+          <div className="home-cta">
+            <h2>Sẵn sàng để bé bắt đầu học rồi đó!</h2>
+            <p>Đăng nhập ngay để mở khóa toàn bộ level và bắt đầu hành trình chinh phục kiến thức.</p>
+            <Link to="/login" className="btn btn-primary">
+              Đăng nhập với Google
+            </Link>
+          </div>
+        </>
       )}
     </section>
   );

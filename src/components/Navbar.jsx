@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { SUBJECTS } from "../data/subjects.js";
 import SoundToggle from "./SoundToggle.jsx";
+import Logo from "./Logo.jsx";
 import "./navbar.css";
 
 const AVATAR_EMOJI = {
@@ -14,12 +15,11 @@ const AVATAR_EMOJI = {
 };
 
 const Navbar = () => {
-  const { user, logout, sendVerification } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [verifyStatus, setVerifyStatus] = useState("idle"); // idle | loading | sent
   const menuRef = useRef(null);
 
   // Đóng dropdown avatar khi bấm ra ngoài
@@ -43,22 +43,11 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleSendVerify = async () => {
-    setVerifyStatus("loading");
-    try {
-      await sendVerification(user.email);
-      setVerifyStatus("sent");
-    } catch {
-      setVerifyStatus("idle");
-      alert("Không gửi được email xác thực, vui lòng thử lại.");
-    }
-  };
-
   return (
     <header className="nav-header">
       <nav className="navbar" aria-label="Điều hướng chính">
         <Link to="/" className="navbar__brand">
-          <span className="navbar__brand-icon">🎮</span>
+          <Logo size={32} />
           <span className="navbar__brand-text">Children Game</span>
         </Link>
 
@@ -83,67 +72,46 @@ const Navbar = () => {
           <SoundToggle />
 
           {user ? (
-            <>
-              {!user.isVerified && (
-                <button
-                  type="button"
-                  className="navbar__verify-btn"
-                  onClick={handleSendVerify}
-                  disabled={verifyStatus !== "idle"}
-                  title="Email chưa được xác thực"
-                >
-                  {verifyStatus === "sent"
-                    ? "Đã gửi ✅"
-                    : verifyStatus === "loading"
-                    ? "Đang gửi..."
-                    : "⚠ Xác thực email"}
-                </button>
+            <div className="navbar__user-menu" ref={menuRef}>
+              <button
+                type="button"
+                className="navbar__avatar-btn"
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
+              >
+                <span className="navbar__avatar-emoji">
+                  {AVATAR_EMOJI[user.avatar] || "🤖"}
+                </span>
+                <span className="navbar__user-name">{user.name}</span>
+                <span className="navbar__caret" aria-hidden="true">▾</span>
+              </button>
+
+              {menuOpen && (
+                <div className="navbar__dropdown" role="menu">
+                  <Link
+                    to="/profile"
+                    className="navbar__dropdown-item"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    👤 Hồ sơ của tôi
+                  </Link>
+                  <button
+                    type="button"
+                    className="navbar__dropdown-item navbar__dropdown-item--danger"
+                    role="menuitem"
+                    onClick={handleLogout}
+                  >
+                    🚪 Đăng xuất
+                  </button>
+                </div>
               )}
-
-              <div className="navbar__user-menu" ref={menuRef}>
-                <button
-                  type="button"
-                  className="navbar__avatar-btn"
-                  onClick={() => setMenuOpen((v) => !v)}
-                  aria-haspopup="true"
-                  aria-expanded={menuOpen}
-                >
-                  <span className="navbar__avatar-emoji">
-                    {AVATAR_EMOJI[user.avatar] || "🤖"}
-                  </span>
-                  <span className="navbar__user-name">{user.name}</span>
-                  <span className="navbar__caret" aria-hidden="true">▾</span>
-                </button>
-
-                {menuOpen && (
-                  <div className="navbar__dropdown" role="menu">
-                    <Link
-                      to="/profile"
-                      className="navbar__dropdown-item"
-                      role="menuitem"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      👤 Hồ sơ của tôi
-                    </Link>
-                    <button
-                      type="button"
-                      className="navbar__dropdown-item navbar__dropdown-item--danger"
-                      role="menuitem"
-                      onClick={handleLogout}
-                    >
-                      🚪 Đăng xuất
-                    </button>
-                  </div>
-                )}
-              </div>
-            </>
+            </div>
           ) : (
             <div className="navbar__auth-links">
               <Link to="/login" className="navbar__login-link">
                 Đăng nhập
-              </Link>
-              <Link to="/register" className="navbar__register-btn">
-                Đăng ký
               </Link>
             </div>
           )}
@@ -198,22 +166,13 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <>
-              <NavLink
-                to="/login"
-                className="navbar__mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                Đăng nhập
-              </NavLink>
-              <NavLink
-                to="/register"
-                className="navbar__mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                Đăng ký
-              </NavLink>
-            </>
+            <NavLink
+              to="/login"
+              className="navbar__mobile-link"
+              onClick={() => setMobileOpen(false)}
+            >
+              Đăng nhập
+            </NavLink>
           )}
         </div>
       )}
