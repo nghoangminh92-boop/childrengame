@@ -14,7 +14,7 @@ const ModeSelect = lazy(() => import("./pages/ModeSelect.jsx"));           // �
 const Result = lazy(() => import("./pages/Result.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const NoticesAdmin = lazy(() => import("./pages/admin/NoticesAdmin.jsx")); // ⭐ ADMIN THÔNG BÁO
-
+const Contact = lazy(() => import("./pages/Contact.jsx"));
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
   return user ? children : <Navigate to="/login" replace />;
@@ -97,7 +97,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-
+            <Route path="/contact" element={<Contact />} />
             {/* ⭐ ADMIN - QUẢN LÝ THÔNG BÁO */}
             <Route
               path="/admin/notices"

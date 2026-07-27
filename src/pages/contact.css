@@ -1,0 +1,102 @@
+.contact-page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.contact-card {
+  padding: 40px 36px;
+  border-radius: 24px;
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(16px);
+}
+
+.contact-card h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-ink, #f5f5f5);
+  margin-bottom: 8px;
+}
+
+.contact-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.6));
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-ink, #e5e5e5);
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.15));
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-ink, #f5f5f5);
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--sakura-petal-a, #f5a3b3);
+}
+
+.contact-form button[type="submit"] {
+  margin-top: 8px;
+}
+
+.contact-error {
+  color: #f87171;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.contact-success {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.contact-success p {
+  font-size: 1rem;
+  color: var(--color-ink, #f5f5f5);
+  margin-bottom: 20px;
+}
+
+[data-theme="light"] .contact-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .contact-card h1,
+[data-theme="light"] .form-group label,
+[data-theme="light"] .contact-success p {
+  color: var(--color-ink, #202124);
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--color-ink, #202124);
+}

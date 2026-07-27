@@ -15,7 +15,6 @@
   transform-origin: center;
   box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.5);
   border-bottom: 3px solid rgba(0, 234, 255, 0.25);
-  /* Bổ sung — tránh cuộn trang bị giật khi chạm vào track trên mobile */
   touch-action: none;
 }
 
@@ -121,6 +120,16 @@
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
 }
 
+/* ⭐ Chạy bình thường — bounce nhịp nhàng */
+.runner-robot--run .character-sprite img {
+  animation: runBounce 0.5s ease-in-out infinite;
+}
+
+@keyframes runBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 .runner-robot--jump .character-sprite img {
   transform: translateY(-50px) scale(1.1) rotate(-6deg);
   filter: drop-shadow(0 10px 12px rgba(0,0,0,0.5)) drop-shadow(0 0 10px rgba(255,215,0,0.6));
@@ -131,9 +140,24 @@
   filter: grayscale(60%) brightness(0.8) drop-shadow(0 0 10px rgba(255,0,60,0.6));
 }
 
+/* ⭐ Ngất xỉu — animation ngã mượt thay vì nhảy tư thế đột ngột */
 .runner-robot--faint .character-sprite img {
-  transform: rotate(-90deg) translateX(-10px) translateY(10px);
-  opacity: 0.85;
+  animation: faintFall 0.6s ease-out forwards;
+}
+
+@keyframes faintFall {
+  0% {
+    transform: rotate(0deg) translateX(0) translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: rotate(-70deg) translateX(-6px) translateY(6px);
+    opacity: 0.95;
+  }
+  100% {
+    transform: rotate(-90deg) translateX(-10px) translateY(10px);
+    opacity: 0.85;
+  }
 }
 
 /* ============================
@@ -328,6 +352,8 @@
   .runner-track.shake,
   .runner-robot::after,
   .runner-robot--jump::before,
+  .runner-robot--run .character-sprite img,
+  .runner-robot--faint .character-sprite img,
   .electric-anim::before,
   .electric-anim::after {
     animation: none;
