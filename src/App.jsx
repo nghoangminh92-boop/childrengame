@@ -7,7 +7,7 @@ import AuroraBackground from "./components/AuroraBackground.jsx";
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
 const LevelMap = lazy(() => import("./pages/LevelMap.jsx"));
-const GamePlay = lazy(() => import("./pages/GamePlays.jsx"));
+const GamePlay = lazy(() => import("./pages/GamePlay.jsx"));
 const GamePlayRunner = lazy(() => import("./pages/GamePlayRunner.jsx"));   // ⭐ CHẾ ĐỘ RUNNER
 const ModeSelect = lazy(() => import("./pages/ModeSelect.jsx"));           // ⭐ CHỌN CHẾ ĐỘ
 
