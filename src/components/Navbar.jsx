@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { SUBJECTS } from "../data/subjects.js";
 import SoundToggle from "./SoundToggle.jsx";
-import "./Navbar.css";
+import "./navbar.css";
 
 const AVATAR_EMOJI = {
   boy: "👦",
