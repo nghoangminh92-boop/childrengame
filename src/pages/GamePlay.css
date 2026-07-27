@@ -12,14 +12,40 @@
     transform: translateX(-50%) scale(1.6);
   }
 }
+
 .runner-track {
   position: relative;
   width: 100%;
+  max-width: 720px;
   height: 160px;
   margin: 16px auto 24px;
-  border-radius: 12px;
-  background: linear-gradient(to right, #222, #333);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e 60%, #0f3460);
+  box-shadow:
+    inset 0 0 40px rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+  touch-action: none;
+}
+
+/* Vạch nền chạy để tạo cảm giác chuyển động */
+.runner-track::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 0px,
+    rgba(255, 255, 255, 0.06) 2px,
+    transparent 2px,
+    transparent 40px
+  );
+  animation: trackScroll 1.2s linear infinite;
+}
+
+@keyframes trackScroll {
+  from { background-position-x: 0; }
+  to { background-position-x: -40px; }
 }
 
 .runner-robot {
@@ -31,22 +57,24 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  z-index: 2;
 }
 
 .runner-robot img {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  transition: transform 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
 }
 
 .runner-robot--jump img {
-  transform: translateY(-40px) scale(1.05);
+  transform: translateY(-44px) scale(1.05) rotate(-6deg);
 }
 
 .runner-robot--hit img {
   transform: translateY(4px) scale(0.95);
-  filter: grayscale(40%) brightness(0.8);
+  filter: grayscale(60%) brightness(0.7) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .runner-obstacle {
@@ -55,13 +83,15 @@
   right: -80px;
   width: 64px;
   height: 64px;
+  z-index: 1;
   animation: obstacleMove 1.2s linear forwards;
 }
 
 .runner-obstacle img {
-  width: 64px;
-  height: 64px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
 }
 
 @keyframes obstacleMove {
@@ -70,5 +100,48 @@
   }
   100% {
     right: 70%;
+  }
+}
+
+/* ===== Responsive cho điện thoại ===== */
+@media (max-width: 600px) {
+  .runner-track {
+    height: 120px;
+    border-radius: 12px;
+    margin: 12px auto 16px;
+  }
+
+  .runner-robot,
+  .runner-robot img {
+    width: 56px;
+    height: 56px;
+  }
+
+  .runner-robot--jump img {
+    transform: translateY(-30px) scale(1.05) rotate(-6deg);
+  }
+
+  .runner-obstacle,
+  .runner-obstacle img {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 380px) {
+  .runner-track {
+    height: 100px;
+  }
+
+  .runner-robot,
+  .runner-robot img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .runner-obstacle,
+  .runner-obstacle img {
+    width: 36px;
+    height: 36px;
   }
 }

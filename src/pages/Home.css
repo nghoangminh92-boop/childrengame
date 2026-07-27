@@ -1,0 +1,116 @@
+/* ===================== HOME — bổ sung ===================== */
+
+.hero-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0 auto 32px;
+}
+
+.hero-subtitle strong {
+  color: var(--color-text);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ===== Dải số liệu nổi bật ===== */
+.hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  list-style: none;
+  margin: 0 auto 36px;
+  padding: 0;
+  max-width: 720px;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  animation: highlightFadeIn 0.5s ease backwards;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.highlight-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(124, 92, 255, 0.25);
+}
+
+.highlight-item:nth-child(1) { animation-delay: 0.05s; }
+.highlight-item:nth-child(2) { animation-delay: 0.15s; }
+.highlight-item:nth-child(3) { animation-delay: 0.25s; }
+.highlight-item:nth-child(4) { animation-delay: 0.35s; }
+
+@keyframes highlightFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.highlight-item span:first-child {
+  font-size: 1.1rem;
+}
+
+/* ===== Nút hành động khi chưa đăng nhập ===== */
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.hero-actions .btn {
+  font-size: 1.05rem;
+  padding: 16px 36px;
+}
+
+/* ===================== RESPONSIVE — bổ sung ===================== */
+@media (max-width: 600px) {
+  .hero-subtitle {
+    font-size: 0.95rem;
+    padding: 0 8px;
+  }
+
+  .hero-highlights {
+    gap: 8px;
+  }
+
+  .highlight-item {
+    font-size: 0.8rem;
+    padding: 8px 14px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 360px) {
+  .highlight-item {
+    font-size: 0.72rem;
+    padding: 6px 10px;
+  }
+
+  .highlight-item span:first-child {
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight-item {
+    animation: none;
+  }
+}
