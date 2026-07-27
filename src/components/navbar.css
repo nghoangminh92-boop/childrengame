@@ -286,3 +286,64 @@
     color: #ff8080;
   }
 }
+
+/* ===== Dropdown Môn học (CSS mới) ===== */
+
+.navbar__subjects-group {
+  position: relative;
+}
+
+.navbar__subjects-btn {
+  background: rgba(255,255,255,0.08);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.navbar__subjects-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.navbar__subjects-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: rgba(30,30,50,0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 999;
+}
+
+.navbar__subjects-item {
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+.navbar__subjects-item:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.navbar__contact-link {
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+.navbar__contact-link:hover {
+  background: rgba(255,255,255,0.12);
+}

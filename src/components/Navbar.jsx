@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { SUBJECTS } from "../data/subjects.js";
 import SoundToggle from "./SoundToggle.jsx";
 import "./navbar.css";
 
@@ -19,21 +18,23 @@ const Navbar = () => {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [subjectsOpen, setSubjectsOpen] = useState(false);
+
   const menuRef = useRef(null);
+  const subjectsRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
+      if (subjectsRef.current && !subjectsRef.current.contains(e.target)) {
+        setSubjectsOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [navigate]);
 
   const handleLogout = () => {
     logout();
@@ -42,28 +43,53 @@ const Navbar = () => {
 
   return (
     <header className="nav-header">
-      <nav className="navbar" aria-label="Điều hướng chính">
+      <nav className="navbar">
+        {/* Brand */}
         <Link to="/" className="navbar__brand">
           <img src="/assets/logo.png" alt="Children Game" className="navbar__brand-logo" />
           <span className="navbar__brand-text">Children Game</span>
         </Link>
 
+        {/* ⭐ GIỮ NGUYÊN VỊ TRÍ SUBJECTS – CHỈ THÊM DROPDOWN */}
         {user && (
           <div className="navbar__subjects">
-            {SUBJECTS.map((subject) => (
-              <NavLink
-                key={subject.key}
-                to={subject.path}
-                className={({ isActive }) =>
-                  "navbar__subject-link" + (isActive ? " is-active" : "")
-                }
+            <div className="navbar__subjects-group" ref={subjectsRef}>
+              <button
+                type="button"
+                className="navbar__subjects-btn"
+                onClick={() => setSubjectsOpen((v) => !v)}
               >
-                <span aria-hidden="true">{subject.emoji}</span> {subject.label}
-              </NavLink>
-            ))}
+                📚 Môn học ▾
+              </button>
+
+              {subjectsOpen && (
+                <div className="navbar__subjects-dropdown">
+                  <NavLink
+                    to="/math"
+                    className="navbar__subjects-item"
+                    onClick={() => setSubjectsOpen(false)}
+                  >
+                    ➕ Toán
+                  </NavLink>
+
+                  <NavLink
+                    to="/english"
+                    className="navbar__subjects-item"
+                    onClick={() => setSubjectsOpen(false)}
+                  >
+                    🔤 Anh
+                  </NavLink>
+                </div>
+              )}
+            </div>
+
+            <Link to="/contact" className="navbar__contact-link">
+              📞 Contact
+            </Link>
           </div>
         )}
 
+        {/* Right */}
         <div className="navbar__right">
           <SoundToggle />
 
@@ -73,30 +99,35 @@ const Navbar = () => {
                 type="button"
                 className="navbar__avatar-btn"
                 onClick={() => setMenuOpen((v) => !v)}
-                aria-haspopup="true"
-                aria-expanded={menuOpen}
               >
                 <span className="navbar__avatar-emoji">
                   {AVATAR_EMOJI[user.avatar] || "🤖"}
                 </span>
                 <span className="navbar__user-name">{user.name}</span>
-                <span className="navbar__caret" aria-hidden="true">▾</span>
+                <span className="navbar__caret">▾</span>
               </button>
 
               {menuOpen && (
-                <div className="navbar__dropdown" role="menu">
+                <div className="navbar__dropdown">
                   <Link
                     to="/profile"
                     className="navbar__dropdown-item"
-                    role="menuitem"
                     onClick={() => setMenuOpen(false)}
                   >
                     👤 Hồ sơ của tôi
                   </Link>
+
+                  <Link
+                    to="/contact"
+                    className="navbar__dropdown-item"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    📞 Liên hệ
+                  </Link>
+
                   <button
                     type="button"
                     className="navbar__dropdown-item navbar__dropdown-item--danger"
-                    role="menuitem"
                     onClick={handleLogout}
                   >
                     🚪 Đăng xuất
@@ -116,8 +147,6 @@ const Navbar = () => {
             type="button"
             className={"navbar__hamburger" + (mobileOpen ? " is-open" : "")}
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Mở menu điều hướng"
-            aria-expanded={mobileOpen}
           >
             <span />
             <span />
@@ -126,21 +155,36 @@ const Navbar = () => {
         </div>
       </nav>
 
+      {/* Mobile menu */}
       {mobileOpen && (
         <div className="navbar__mobile-menu">
-          {user &&
-            SUBJECTS.map((subject) => (
+          {user && (
+            <>
               <NavLink
-                key={subject.key}
-                to={subject.path}
-                className={({ isActive }) =>
-                  "navbar__mobile-link" + (isActive ? " is-active" : "")
-                }
+                to="/math"
+                className="navbar__mobile-link"
                 onClick={() => setMobileOpen(false)}
               >
-                <span aria-hidden="true">{subject.emoji}</span> {subject.label}
+                ➕ Toán
               </NavLink>
-            ))}
+
+              <NavLink
+                to="/english"
+                className="navbar__mobile-link"
+                onClick={() => setMobileOpen(false)}
+              >
+                🔤 Anh
+              </NavLink>
+
+              <NavLink
+                to="/contact"
+                className="navbar__mobile-link"
+                onClick={() => setMobileOpen(false)}
+              >
+                📞 Liên hệ
+              </NavLink>
+            </>
+          )}
 
           {user ? (
             <>
@@ -149,8 +193,9 @@ const Navbar = () => {
                 className="navbar__mobile-link"
                 onClick={() => setMobileOpen(false)}
               >
-                {AVATAR_EMOJI[user.avatar] || "🤖"} Hồ sơ của tôi
+                👤 Hồ sơ của tôi
               </NavLink>
+
               <button
                 type="button"
                 className="navbar__mobile-link navbar__mobile-link--danger"
