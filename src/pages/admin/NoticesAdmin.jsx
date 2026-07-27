@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
-import "./NoticesAdmin.css";
+import "./NoticeAdmin.css";
  
 const TYPE_OPTIONS = [
   { value: "update", label: "🆕 Cập nhật mới" },
