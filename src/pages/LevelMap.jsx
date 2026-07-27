@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import LevelNode from "../components/LevelNode.jsx";
+   import "./LevelMap.css";
 
 const SUBJECT_LABEL = { math: "Toán học 🧮", english: "Tiếng Anh 🔤" };
 
