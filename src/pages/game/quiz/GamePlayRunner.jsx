@@ -6,7 +6,7 @@ import HeartsDisplay from "../../../components/HeartsDisplay.jsx";
 import ProgressBar from "../../../components/ProgressBar.jsx";
 import QuestionCard from "../../../components/QuestionCard.jsx";
 import CharacterSprite from "../../../components/CharacterSprite.jsx";
-import "../styles/runner.css";
+import "../style/runner.css";
 
 const MAX_LIVES = 3;
 const POINTS_PER_CORRECT = 10;
