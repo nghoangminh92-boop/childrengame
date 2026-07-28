@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import "./GradeSelect.css";
 
 const GradeSelect = () => {
   const navigate = useNavigate();
