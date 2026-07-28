@@ -1,6 +1,6 @@
 // ColoringGame.jsx
 import { useEffect, useRef, useState } from "react";
-import api from "../../../api/axios.js";
+import api from "../../../api/axios.js";   
 import { useAuth } from "../context/AuthContext.jsx";
 import ColoringCanvas from "./ColoringCanvas.jsx";
 import { OUTLINES } from "./outlines.js";
