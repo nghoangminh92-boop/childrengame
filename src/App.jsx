@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
 
 import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/footer.jsx";
+import Footer from "./components/Footer.jsx";
 import AuroraBackground from "./components/AuroraBackground.jsx";
 
 const Home = lazy(() => import("./pages/Home.jsx"));
