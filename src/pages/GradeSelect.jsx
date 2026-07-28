@@ -3,13 +3,13 @@ import { useAuth } from "../context/AuthContext";
 
 const GradeSelect = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useAuth();
+  const { updateUser } = useAuth();   // ⭐ đổi setUser -> updateUser
 
   const grades = [1, 2, 3, 4, 5];
 
   const handleSelect = (g) => {
-    setUser({ ...user, grade: g });   // ⭐ Lưu grade vào user
-    navigate("/subjects");            // ⭐ Chuyển sang chọn môn
+    updateUser({ grade: g });         // ⭐ chỉ cần patch, không cần spread user thủ công
+    navigate("/subjects");
   };
 
   return (
