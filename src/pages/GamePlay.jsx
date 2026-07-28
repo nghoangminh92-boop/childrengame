@@ -7,11 +7,13 @@ import QuestionCard from "../components/QuestionCard.jsx";
 import HeartsDisplay from "../components/HeartsDisplay.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
 import "../styles/GamePlay.css";
+
 const MAX_LIVES = 3;
 const POINTS_PER_CORRECT = 10;
 
 const GamePlay = () => {
-  const { subject, level } = useParams();
+  // ⭐ PHẢI LẤY ĐỦ subject + grade + level
+  const { subject, grade, level } = useParams();
   const navigate = useNavigate();
   const { play } = useSound();
   const { user } = useAuth();
@@ -38,7 +40,7 @@ const GamePlay = () => {
     let active = true;
     setLoading(true);
 
-    // ⭐ RESET TOÀN BỘ STATE MỖI KHI VÀO LẠI LEVEL (kể cả chơi lại cùng level)
+    // ⭐ RESET STATE MỖI LẦN VÀO LEVEL
     setCurrentIdx(0);
     setSelected(null);
     setRevealed(false);
@@ -51,8 +53,11 @@ const GamePlay = () => {
     setCombo(0);
     setError("");
 
+    // ⭐ API PHẢI GỬI ĐỦ type + grade + level
     api
-      .get("/game/questions", { params: { type: subject, level } })
+      .get("/game/questions", {
+        params: { type: subject, grade, level },
+      })
       .then(({ data }) => {
         if (active) {
           setQuestions(data.questions);
@@ -60,28 +65,33 @@ const GamePlay = () => {
         }
       })
       .catch((err) => {
-        if (active) setError(err.response?.data?.message || "Không tải được câu hỏi");
+        if (active)
+          setError(err.response?.data?.message || "Không tải được câu hỏi");
       })
       .finally(() => active && setLoading(false));
 
     return () => {
       active = false;
     };
-  }, [subject, level]);
+  }, [subject, grade, level]);
 
+  // ⭐ SUBMIT PHẢI GỬI ĐỦ grade
   const finishLevel = useCallback(
     async (finalCorrectCount, finalScore, outOfLives) => {
       try {
         const { data } = await api.post("/game/submit", {
           type: subject,
+          grade: Number(grade),
           level: Number(level),
           correctCount: finalCorrectCount,
           totalQuestions: questions.length,
           score: finalScore,
         });
+
         navigate("/result", {
           state: {
             subject,
+            grade: Number(grade),
             level: Number(level),
             chapterTitle: chapter?.title,
             passed: data.passed,
@@ -90,14 +100,14 @@ const GamePlay = () => {
             correctCount: finalCorrectCount,
             totalQuestions: questions.length,
             outOfLives,
-            mode: "quiz", // ⭐ chế độ Quiz
+            mode: "quiz",
           },
         });
       } catch (err) {
         setError(err.response?.data?.message || "Không thể lưu kết quả");
       }
     },
-    [subject, level, questions.length, navigate, chapter]
+    [subject, grade, level, questions.length, navigate, chapter]
   );
 
   const handleSelect = (option) => {
@@ -172,8 +182,8 @@ const GamePlay = () => {
     return (
       <div style={{ textAlign: "center" }}>
         <p className="form-error">{error}</p>
-        <Link to={`/levels/${subject}`} className="btn btn-outline">
-          Quay lại bản đồ level
+        <Link to={`/map/${subject}/${grade}`} className="btn btn-outline">
+          Quay lại bản đồ chương
         </Link>
       </div>
     );
@@ -183,7 +193,7 @@ const GamePlay = () => {
     return (
       <p style={{ textAlign: "center" }}>
         Chưa có câu hỏi cho level này.{" "}
-        <Link to={`/levels/${subject}`}>Quay lại bản đồ level</Link>
+        <Link to={`/map/${subject}/${grade}`}>Quay lại bản đồ chương</Link>
       </p>
     );
   }

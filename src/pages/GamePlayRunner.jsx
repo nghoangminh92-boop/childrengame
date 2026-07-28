@@ -12,7 +12,8 @@ const MAX_LIVES = 3;
 const POINTS_PER_CORRECT = 10;
 
 const GamePlayRunner = () => {
-  const { subject, level } = useParams();
+  // ⭐ PHẢI LẤY ĐỦ subject + grade + level
+  const { subject, grade, level } = useParams();
   const navigate = useNavigate();
   const { play } = useSound();
 
@@ -40,7 +41,7 @@ const GamePlayRunner = () => {
     let active = true;
     setLoading(true);
 
-    // ⭐ RESET TOÀN BỘ STATE MỖI KHI VÀO LẠI LEVEL (kể cả chơi lại cùng level)
+    // ⭐ RESET STATE
     setCurrentIdx(0);
     setSelected(null);
     setRevealed(false);
@@ -55,8 +56,11 @@ const GamePlayRunner = () => {
     setShake(false);
     setError("");
 
+    // ⭐ API PHẢI GỬI ĐỦ type + grade + level
     api
-      .get("/game/questions", { params: { type: subject, level } })
+      .get("/game/questions", {
+        params: { type: subject, grade, level },
+      })
       .then(({ data }) => {
         if (active) {
           setQuestions(data.questions);
@@ -64,20 +68,23 @@ const GamePlayRunner = () => {
         }
       })
       .catch((err) => {
-        if (active) setError(err.response?.data?.message || "Không tải được câu hỏi");
+        if (active)
+          setError(err.response?.data?.message || "Không tải được câu hỏi");
       })
       .finally(() => active && setLoading(false));
 
     return () => {
       active = false;
     };
-  }, [subject, level]);
+  }, [subject, grade, level]);
 
+  // ⭐ SUBMIT PHẢI GỬI ĐỦ grade
   const finishLevel = useCallback(
     async (finalCorrectCount, finalScore, outOfLives) => {
       try {
         const { data } = await api.post("/game/submit", {
           type: subject,
+          grade: Number(grade),
           level: Number(level),
           correctCount: finalCorrectCount,
           totalQuestions: questions.length,
@@ -87,6 +94,7 @@ const GamePlayRunner = () => {
         navigate("/result", {
           state: {
             subject,
+            grade: Number(grade),
             level: Number(level),
             chapterTitle: chapter?.title,
             passed: data.passed,
@@ -95,14 +103,14 @@ const GamePlayRunner = () => {
             correctCount: finalCorrectCount,
             totalQuestions: questions.length,
             outOfLives,
-            mode: "runner", // ⭐ chế độ Runner
+            mode: "runner",
           },
         });
       } catch (err) {
         setError(err.response?.data?.message || "Không thể lưu kết quả");
       }
     },
-    [subject, level, questions.length, navigate, chapter]
+    [subject, grade, level, questions.length, navigate, chapter]
   );
 
   const handleSelect = (option) => {
@@ -132,7 +140,6 @@ const GamePlayRunner = () => {
       setRunnerState("hit");
       setCombo(0);
 
-      // ⭐ HIỆU ỨNG NỔ + CAMERA SHAKE
       setExplosion(true);
       setShake(true);
 
@@ -154,7 +161,6 @@ const GamePlayRunner = () => {
         ? score + POINTS_PER_CORRECT + (combo + 1 >= 3 ? 5 : 0)
         : score;
 
-      // ⭐ HẾT MẠNG → chạy animation faint rồi mới chuyển trang kết quả
       if (!isCorrect && newLives <= 0) {
         setRunnerState("faint");
         setTimeout(() => finishLevel(finalCorrect, finalScore, true), 900);
@@ -175,15 +181,24 @@ const GamePlayRunner = () => {
     }, 900);
   };
 
-  if (loading) return <p style={{ textAlign: "center" }}>Đang chuẩn bị đường chạy... 🏃‍♂️</p>;
-  if (error) return <p className="form-error">{error}</p>;
+  if (loading)
+    return <p style={{ textAlign: "center" }}>Đang chuẩn bị đường chạy... 🏃‍♂️</p>;
+
+  if (error)
+    return (
+      <p className="form-error">
+        {error}
+      </p>
+    );
 
   const question = questions[currentIdx];
 
   return (
     <section>
       <h1 style={{ textAlign: "center" }}>
-        {chapter ? `${chapter.icon} Đường chạy ${level}: ${chapter.title}` : `Runner Level ${level}`}
+        {chapter
+          ? `${chapter.icon} Đường chạy ${level}: ${chapter.title}`
+          : `Runner Level ${level}`}
       </h1>
 
       <div className="game-header">
@@ -214,7 +229,14 @@ const GamePlayRunner = () => {
       />
 
       {combo >= 3 && (
-        <p style={{ textAlign: "center", marginTop: 12, color: "var(--color-warning)", fontWeight: 700 }}>
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: 12,
+            color: "var(--color-warning)",
+            fontWeight: 700,
+          }}
+        >
           🔥 Combo x{combo}!
         </p>
       )}
