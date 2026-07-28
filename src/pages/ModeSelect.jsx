@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 
 const ModeSelect = () => {
-  const { subject, level } = useParams();
+  const { subject, grade, level } = useParams();   // ⭐ thêm grade
 
   return (
     <section style={{ textAlign: "center", marginTop: 40 }}>
@@ -9,7 +9,7 @@ const ModeSelect = () => {
 
       <div style={{ marginTop: 24 }}>
         <Link
-          to={`/play/${subject}/${level}`}
+          to={`/play/${subject}/${grade}/${level}`}
           className="btn btn-primary"
           style={{ marginRight: 12 }}
         >
@@ -17,8 +17,9 @@ const ModeSelect = () => {
         </Link>
 
         <Link
-          to={`/runner/${subject}/${level}`}
-          className="btn btn-outline">
+          to={`/runner/${subject}/${grade}/${level}`}
+          className="btn btn-outline"
+        >
           🏃‍♂️ Chế độ Runner
         </Link>
       </div>

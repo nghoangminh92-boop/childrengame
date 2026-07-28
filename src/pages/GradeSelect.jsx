@@ -1,15 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./GradeSelect.css"
+
 const GradeSelect = () => {
   const navigate = useNavigate();
-  const { updateUser } = useAuth();   // ⭐ đổi setUser -> updateUser
+  const { subject } = useParams();       // ⭐ lấy subject từ URL
+  const { updateUser } = useAuth();
 
   const grades = [1, 2, 3, 4, 5];
 
   const handleSelect = (g) => {
-    updateUser({ grade: g });         // ⭐ chỉ cần patch, không cần spread user thủ công
-    navigate("/subjects");
+    updateUser({ grade: g });
+    navigate(`/map/${subject}/${g}`);    // ⭐ đi tiếp tới Level Map
   };
 
   return (
