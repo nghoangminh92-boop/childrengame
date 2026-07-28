@@ -14,16 +14,15 @@ import {
 } from "../components/icon/Icons.jsx";
 import "./Home.css";
 
-// ⭐ SỬA ĐÚNG ROUTE MỚI: /grade/:subject
 const SUBJECTS = [
   {
-    to: "/grade/math",
+    to: "/levels/math",
     Icon: IconMath,
     title: "Toán học",
     description: "Chinh phục 10 level từ dễ đến khó",
   },
   {
-    to: "/grade/english",
+    to: "/levels/english",
     Icon: IconEnglish,
     title: "Tiếng Anh",
     description: "Học từ vựng & ngữ pháp cơ bản",
@@ -60,6 +59,7 @@ const HOW_IT_WORKS = [
   { step: "4", text: "Theo dõi tiến bộ, mở khóa level mới mỗi ngày" },
 ];
 
+// Cấu hình style/icon theo loại thông báo
 const NOTICE_TYPES = {
   update: { icon: "🆕", label: "Cập nhật mới", className: "notice--update" },
   warning: { icon: "⚠️", label: "Lưu ý", className: "notice--warning" },
@@ -84,6 +84,7 @@ const formatDate = (isoString) => {
   }
 };
 
+// Component thông báo hệ thống — tách riêng để tái sử dụng ở nơi khác (Dashboard, Header...)
 const AnnouncementNotice = ({ notice, onDismiss }) => {
   if (!notice) return null;
   const config = NOTICE_TYPES[notice.type] || NOTICE_TYPES.update;
@@ -244,6 +245,7 @@ const Home = () => {
             </Link>
           </div>
 
+          {/* ===== Preview môn học ===== */}
           <div className="home-section">
             <h2 className="home-section-title">Khám phá các môn học</h2>
             <div className="subject-grid subject-grid--preview">
@@ -253,6 +255,7 @@ const Home = () => {
             </div>
           </div>
 
+          {/* ===== Tính năng nổi bật ===== */}
           <div className="home-section">
             <h2 className="home-section-title">Vì sao bé sẽ thích Children Game?</h2>
             <div className="feature-grid">
@@ -262,6 +265,7 @@ const Home = () => {
             </div>
           </div>
 
+          {/* ===== Cách hoạt động ===== */}
           <div className="home-section">
             <h2 className="home-section-title">Bắt đầu chỉ với 4 bước</h2>
             <div className="steps-grid">
@@ -274,6 +278,7 @@ const Home = () => {
             </div>
           </div>
 
+          {/* ===== CTA cuối trang ===== */}
           <div className="home-cta">
             <h2>Sẵn sàng để bé bắt đầu học rồi đó!</h2>
             <p>Đăng nhập ngay để mở khóa toàn bộ level và bắt đầu hành trình chinh phục kiến thức.</p>
