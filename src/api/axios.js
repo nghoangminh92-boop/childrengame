@@ -1,11 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    (import.meta.env.VITE_BACKEND_URL || "https://backend-childrengame.onrender.com") + "/api",
+  baseURL: import.meta.env.VITE_BACKEND_URL || "https://backend-childrengame.onrender.com/api",
 });
 
-// Không gửi Authorization khi verify email
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("edugame_token");
 
