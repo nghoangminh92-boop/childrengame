@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import { useSound } from "../context/SoundContext.jsx";
 import HeartsDisplay from "../components/HeartsDisplay.jsx";
@@ -63,7 +63,7 @@ const GamePlayRunner = () => {
       })
       .then(({ data }) => {
         if (active) {
-          setQuestions(data.questions);
+          setQuestions(data.questions || []);
           setChapter(data.chapter);
         }
       })
@@ -181,15 +181,30 @@ const GamePlayRunner = () => {
     }, 900);
   };
 
-  if (loading)
+  if (loading) {
     return <p style={{ textAlign: "center" }}>Đang chuẩn bị đường chạy... 🏃‍♂️</p>;
+  }
 
-  if (error)
+  if (error) {
     return (
-      <p className="form-error">
-        {error}
+      <div style={{ textAlign: "center" }}>
+        <p className="form-error">{error}</p>
+        <Link to={`/map/${subject}/${grade}`} className="btn btn-outline">
+          Quay lại bản đồ chương
+        </Link>
+      </div>
+    );
+  }
+
+  // ⭐ GUARD: tránh crash khi chưa có câu hỏi
+  if (!questions.length) {
+    return (
+      <p style={{ textAlign: "center" }}>
+        Chưa có câu hỏi cho level này.{" "}
+        <Link to={`/map/${subject}/${grade}`}>Quay lại bản đồ chương</Link>
       </p>
     );
+  }
 
   const question = questions[currentIdx];
 

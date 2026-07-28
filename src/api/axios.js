@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL || "https://backend-childrengame.onrender.com",
+  baseURL:
+    (import.meta.env.VITE_BACKEND_URL || "https://backend-childrengame.onrender.com") + "/api",
 });
 
 // Không gửi Authorization khi verify email
