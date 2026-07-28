@@ -1,5 +1,6 @@
 .login-page {
   min-height: 100vh;
+  min-height: 100dvh; /* tránh bị che bởi thanh địa chỉ trên trình duyệt di động */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,6 +108,17 @@
   50% { opacity: 0.9; transform: scale(1.1); }
 }
 
+/* Tôn trọng người dùng tắt hiệu ứng chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring,
+  .orbit-badge-inner,
+  .login-mascot,
+  .login-star,
+  .login-card {
+    animation: none;
+  }
+}
+
 /* ===== Thẻ đăng nhập ===== */
 .login-card {
   width: 100%;
@@ -205,11 +217,22 @@
   border-color: rgba(0, 0, 0, 0.15);
 }
 
-/* ===== Responsive ===== */
+/* ===================== RESPONSIVE ===================== */
+
+/* Tablet nhỏ / màn hình vừa */
+@media (max-width: 768px) {
+  .login-page {
+    gap: 40px;
+    padding: 40px 20px;
+  }
+}
+
+/* Mobile: xếp dọc, thu nhỏ orbit + card, tránh tràn ngang */
 @media (max-width: 640px) {
   .login-page {
     flex-direction: column;
-    gap: 32px;
+    gap: 28px;
+    padding: 32px 16px;
   }
 
   .login-orbit {
@@ -222,7 +245,96 @@
     height: 150px;
   }
 
+  .orbit-badge {
+    width: 44px;
+    height: 44px;
+  }
+
+  .orbit-badge-inner {
+    font-size: 1.15rem;
+  }
+
+  .orbit-badge--math {
+    top: -20px;
+  }
+
+  .orbit-badge--english {
+    bottom: -20px;
+  }
+
   .login-mascot {
     font-size: 3rem;
+  }
+
+  .login-mascot-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .login-star {
+    font-size: 0.85rem;
+  }
+
+  .login-card {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+  }
+}
+
+/* Điện thoại rất nhỏ (≤380px): thu gọn thêm, ẩn quỹ đạo trang trí để
+   ưu tiên không gian cho form đăng nhập — vẫn giữ mascot cho nhận diện */
+@media (max-width: 380px) {
+  .login-page {
+    padding: 24px 12px;
+    gap: 20px;
+  }
+
+  .login-orbit {
+    width: 140px;
+    height: 140px;
+  }
+
+  .orbit-ring {
+    width: 116px;
+    height: 116px;
+  }
+
+  .login-mascot {
+    font-size: 2.4rem;
+  }
+
+  .login-mascot-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .login-card {
+    padding: 24px 18px;
+  }
+
+  .login-title {
+    font-size: 1.3rem;
+  }
+}
+
+/* Màn hình rất thấp (ví dụ điện thoại xoay ngang): tránh card bị
+   tràn khỏi viewport theo chiều dọc */
+@media (max-height: 560px) and (max-width: 900px) {
+  .login-page {
+    min-height: auto;
+    padding: 24px 20px;
+  }
+
+  .login-orbit {
+    display: none;
   }
 }

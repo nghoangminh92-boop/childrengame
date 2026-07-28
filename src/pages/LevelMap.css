@@ -53,10 +53,22 @@
   border: none;
   position: relative;
   transition: transform 0.15s ease;
+  /* đảm bảo node không bị bóp méo trong flex column */
+  flex-shrink: 0;
 }
 
 .level-node:hover {
   transform: scale(1.07);
+}
+
+/* Tôn trọng người dùng tắt hiệu ứng chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  .level-node {
+    transition: none;
+  }
+  .level-node.unlocked {
+    animation: none;
+  }
 }
 
 .level-node.locked {
@@ -94,14 +106,82 @@
   font-size: 0.85rem;
   color: var(--color-text-muted);
   margin-top: 6px;
+  text-align: center;
+  max-width: 100px;
 }
 
 /* ===================== RESPONSIVE ===================== */
+
+/* Tablet: giảm zigzag lại một chút, node nhỏ hơn */
 @media (max-width: 768px) {
+  .level-map {
+    padding: 32px 16px 64px;
+  }
+
+  .level-node-wrap:nth-child(even) {
+    margin-left: 4%;
+  }
+  .level-node-wrap:nth-child(odd) {
+    margin-right: 4%;
+  }
+
+  .level-node {
+    width: 76px;
+    height: 76px;
+    font-size: 1.6rem;
+  }
+}
+
+/* Mobile: bỏ hẳn zigzag, xếp thẳng hàng giữa cho dễ bấm bằng ngón tay,
+   thu nhỏ node và khoảng cách để vừa màn hình hẹp */
+@media (max-width: 480px) {
+  .level-map {
+    padding: 24px 12px 48px;
+  }
+
+  .level-path {
+    gap: 4px;
+  }
+
   .level-node-wrap:nth-child(even),
   .level-node-wrap:nth-child(odd) {
     margin-left: 0;
     margin-right: 0;
     align-self: center;
+  }
+
+  .level-connector {
+    height: 32px;
+  }
+
+  .level-node {
+    width: 64px;
+    height: 64px;
+    font-size: 1.3rem;
+  }
+
+  .level-node .badge-icon {
+    font-size: 0.9rem;
+    top: -4px;
+    right: -4px;
+  }
+
+  .level-label {
+    font-size: 0.78rem;
+    margin-top: 4px;
+    max-width: 84px;
+  }
+}
+
+/* Điện thoại rất nhỏ (≤360px) */
+@media (max-width: 360px) {
+  .level-node {
+    width: 56px;
+    height: 56px;
+    font-size: 1.15rem;
+  }
+
+  .level-connector {
+    height: 26px;
   }
 }

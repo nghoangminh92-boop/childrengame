@@ -290,76 +290,6 @@
 }
 
 /* ============================
-   RESPONSIVE — bổ sung
-   ============================ */
-@media (max-width: 600px) {
-  .runner-track {
-    height: 130px;
-    margin: 14px auto 20px;
-  }
-
-  .runner-robot,
-  .character-sprite img {
-    width: 62px;
-    height: 62px;
-  }
-
-  .runner-robot--jump .character-sprite img {
-    transform: translateY(-34px) scale(1.1) rotate(-6deg);
-  }
-
-  .runner-obstacle {
-    width: 48px;
-    height: 48px;
-  }
-
-  .electric-anim {
-    width: 48px;
-    height: 48px;
-  }
-
-  .electric-anim::before,
-  .electric-anim::after {
-    height: 40px;
-  }
-}
-
-@media (max-width: 380px) {
-  .runner-track {
-    height: 105px;
-  }
-
-  .runner-robot,
-  .character-sprite img {
-    width: 50px;
-    height: 50px;
-  }
-
-  .runner-robot--jump .character-sprite img {
-    transform: translateY(-26px) scale(1.08) rotate(-6deg);
-  }
-
-  .runner-obstacle {
-    width: 38px;
-    height: 38px;
-  }
-}
-
-/* Bổ sung — người dùng cài đặt giảm hiệu ứng chuyển động */
-@media (prefers-reduced-motion: reduce) {
-  .runner-track::before,
-  .runner-track::after,
-  .runner-track.shake,
-  .runner-robot::after,
-  .runner-robot--jump::before,
-  .runner-robot--run .character-sprite img,
-  .runner-robot--faint .character-sprite img,
-  .electric-anim::before,
-  .electric-anim::after {
-    animation: none;
-  }
-}
-/* ============================
    HEADER — tim, progress, điểm
    ============================ */
 .game-header {
@@ -380,6 +310,7 @@
   color: #ffd700;
   font-weight: 700;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ============================
@@ -449,6 +380,8 @@
   text-align: left;
   cursor: pointer;
   transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  /* đảm bảo vùng chạm tối thiểu 44px trên mọi kích thước */
+  min-height: 44px;
 }
 
 .option-btn:hover:not(:disabled) {
@@ -503,10 +436,133 @@
 }
 
 /* ============================
-   RESPONSIVE — card & options
+   RESPONSIVE — track & nhân vật
    ============================ */
 @media (max-width: 600px) {
+  .runner-track {
+    height: 130px;
+    margin: 14px auto 20px;
+  }
+
+  .runner-robot,
+  .character-sprite img {
+    width: 62px;
+    height: 62px;
+  }
+
+  .runner-robot--jump .character-sprite img {
+    transform: translateY(-34px) scale(1.1) rotate(-6deg);
+  }
+
+  .runner-obstacle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .electric-anim {
+    width: 48px;
+    height: 48px;
+  }
+
+  .electric-anim::before,
+  .electric-anim::after {
+    height: 40px;
+  }
+
+  /* ---- header / question / options ---- */
+  .game-header {
+    padding: 0 4px;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .score-pill {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .question-card {
+    padding: 20px clamp(14px, 4vw, 32px);
+    border-radius: 14px;
+  }
+
+  .question-text {
+    margin-bottom: 20px;
+  }
+
   .options-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .option-btn {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+
+  .option-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .runner-track {
+    height: 105px;
+  }
+
+  .runner-robot,
+  .character-sprite img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .runner-robot--jump .character-sprite img {
+    transform: translateY(-26px) scale(1.08) rotate(-6deg);
+  }
+
+  .runner-obstacle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .score-pill {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+
+  .question-card {
+    padding: 16px clamp(12px, 4vw, 28px);
+  }
+
+  .option-btn {
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    gap: 8px;
+  }
+}
+
+/* Người dùng cài đặt giảm hiệu ứng chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  .runner-track::before,
+  .runner-track::after,
+  .runner-track.shake,
+  .runner-robot::after,
+  .runner-robot--jump::before,
+  .runner-robot--run .character-sprite img,
+  .runner-robot--faint .character-sprite img,
+  .electric-anim::before,
+  .electric-anim::after,
+  .question-card.flash-correct,
+  .question-card.flash-wrong,
+  .check-bounce,
+  .explosion-effect::before,
+  .explosion-effect::after {
+    animation: none;
+  }
+
+  .option-btn {
+    transition: none;
   }
 }

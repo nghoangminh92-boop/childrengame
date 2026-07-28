@@ -18,6 +18,7 @@
   display: flex;
   gap: 4px;
   font-size: 1.4rem;
+  flex-shrink: 0;
 }
 
 .heart-lost {
@@ -36,6 +37,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.1);
   overflow: hidden;
+  min-width: 0; /* cho phép co lại trong flex container trên màn hẹp */
 }
 
 .progress-bar-fill {
@@ -52,6 +54,7 @@
   color: var(--color-warning);
   font-weight: 700;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .avatar-stage {
@@ -148,6 +151,8 @@
   align-items: center;
   gap: 10px;
   width: 100%;
+  /* đảm bảo vùng chạm tối thiểu 44px trên mọi kích thước */
+  min-height: 44px;
 }
 
 .option-btn:hover:not(:disabled) {
@@ -188,6 +193,28 @@
   100% { transform: scale(1); }
 }
 
+/* Tôn trọng người dùng bật "giảm hiệu ứng chuyển động" */
+@media (prefers-reduced-motion: reduce) {
+  .heart-lost,
+  .avatar-emoji.jump,
+  .avatar-emoji.sad,
+  .question-card.flash-correct,
+  .question-card.flash-wrong,
+  .check-bounce,
+  .confetti-piece,
+  .result-card,
+  .star-fly,
+  .result-progress-fill,
+  .unlock-badge {
+    animation: none !important;
+  }
+
+  .progress-bar-fill,
+  .option-btn {
+    transition: none;
+  }
+}
+
 /* ===================== CONFETTI ===================== */
 .confetti-piece {
   position: fixed;
@@ -216,6 +243,8 @@
   justify-content: center;
   z-index: 40;
   padding: 20px;
+  /* cho phép cuộn nếu nội dung result-card cao hơn màn hình (bàn phím ảo, xoay ngang...) */
+  overflow-y: auto;
 }
 
 .result-card {
@@ -224,6 +253,7 @@
   padding: 40px 32px;
   text-align: center;
   animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin: auto;
 }
 
 @keyframes popIn {
@@ -276,8 +306,127 @@
 }
 
 /* ===================== RESPONSIVE ===================== */
+
+/* Tablet nhỏ */
 @media (max-width: 768px) {
+  .game-container {
+    padding: 20px 14px;
+  }
+
   .options-grid {
     grid-template-columns: 1fr;
+  }
+
+  .question-card {
+    padding: 32px clamp(16px, 4vw, 40px);
+  }
+}
+
+/* Mobile: header dễ vỡ nhất — hearts + progress bar + score trên 1 hàng
+   thường bị bóp quá chật trên màn hẹp, cần giảm size từng phần */
+@media (max-width: 480px) {
+  .game-container {
+    padding: 16px 12px;
+  }
+
+  .game-header {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .hearts {
+    font-size: 1.1rem;
+    gap: 2px;
+  }
+
+  .progress-bar-track {
+    height: 10px;
+  }
+
+  .score-pill {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+
+  .avatar-stage {
+    min-height: 120px;
+  }
+
+  .avatar-emoji {
+    font-size: 2.4rem;
+  }
+
+  .question-card {
+    padding: 24px 16px;
+    border-radius: 18px;
+  }
+
+  .question-text {
+    margin-bottom: 22px;
+  }
+
+  .option-btn {
+    padding: 14px 14px;
+    font-size: 1rem;
+  }
+
+  .option-icon {
+    font-size: 1.1rem;
+  }
+
+  .result-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  .result-card .stars {
+    font-size: 2rem;
+    margin: 12px 0;
+  }
+
+  .unlock-badge {
+    font-size: 1.7rem;
+  }
+}
+
+/* Màn hình rất nhỏ (điện thoại phổ thông, iPhone SE...) */
+@media (max-width: 360px) {
+  .hearts {
+    font-size: 1rem;
+  }
+
+  .score-pill {
+    padding: 4px 8px;
+    font-size: 0.78rem;
+  }
+
+  .avatar-emoji {
+    font-size: 2.1rem;
+  }
+
+  .option-btn {
+    padding: 12px 12px;
+    font-size: 0.92rem;
+    gap: 8px;
+  }
+
+  .result-card {
+    padding: 22px 16px;
+  }
+}
+
+/* Xoay ngang / màn hình thấp: tránh khu vực avatar chiếm quá nhiều
+   chiều cao khi không gian dọc hạn chế */
+@media (max-height: 560px) {
+  .avatar-stage {
+    min-height: 90px;
+  }
+
+  .avatar-emoji {
+    font-size: 2.2rem;
+  }
+
+  .question-card {
+    padding: 20px clamp(16px, 4vw, 40px);
   }
 }
