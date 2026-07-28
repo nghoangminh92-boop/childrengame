@@ -1,0 +1,405 @@
+/* ColoringGame.css */
+
+.coloring-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.coloring-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--color-ink, #f5f5f5);
+  margin-bottom: 6px;
+}
+
+.coloring-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.6));
+  margin-bottom: 28px;
+}
+
+/* ===== Chọn hình ===== */
+.outline-picker {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.outline-thumb {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  border: 2px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+  min-height: 44px;
+}
+
+.outline-thumb-emoji {
+  font-size: 1.8rem;
+}
+
+.outline-thumb-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.7));
+}
+
+.outline-thumb:hover {
+  transform: translateY(-2px);
+}
+
+.outline-thumb--active {
+  border-color: var(--sakura-petal-a, #f5a3b3);
+  background: rgba(245, 163, 179, 0.12);
+}
+
+/* ===== Workspace: canvas + toolbar ===== */
+.coloring-workspace {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.coloring-canvas-wrap {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  flex-shrink: 0;
+  /* quan trọng: đảm bảo canvas không lớn hơn khung nhìn trên mobile */
+  max-width: 100%;
+}
+
+.coloring-canvas {
+  display: block;
+  touch-action: none; /* ngăn cuộn trang khi vẽ bằng ngón tay */
+  cursor: crosshair;
+}
+
+.coloring-outline-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* để thao tác vẽ luôn xuyên qua lớp nét viền */
+}
+
+/* ===== Toolbar ===== */
+.coloring-toolbar {
+  flex: 1;
+  min-width: 240px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+}
+
+.toolbar-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.6));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.palette-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.palette-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  padding: 0;
+  /* vùng chạm tối thiểu — nới rộng bằng vùng đệm trong suốt xung quanh */
+  position: relative;
+}
+
+.palette-swatch::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+}
+
+.palette-swatch--active {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px var(--sakura-petal-a, #f5a3b3);
+}
+
+.palette-swatch--custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+  overflow: hidden;
+}
+
+.palette-swatch--custom input[type="color"] {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.brush-size-row {
+  display: flex;
+  gap: 8px;
+}
+
+.brush-size-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 2px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  background: transparent;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.7));
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.brush-size-btn--active {
+  border-color: var(--sakura-petal-a, #f5a3b3);
+  color: var(--color-ink, #f5f5f5);
+}
+
+.brush-size-dot {
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.toolbar-group--actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tool-btn {
+  flex: 1;
+  min-width: 90px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  background: transparent;
+  color: var(--color-ink, #f0f0f0);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tool-btn:hover {
+  border-color: var(--sakura-petal-a, rgba(245, 163, 179, 0.5));
+}
+
+.tool-btn--active {
+  border-color: var(--sakura-petal-a, #f5a3b3);
+  background: rgba(245, 163, 179, 0.12);
+}
+
+.coloring-toolbar .btn-primary {
+  width: 100%;
+  min-height: 44px;
+}
+
+.coloring-save-message {
+  font-size: 0.82rem;
+  text-align: center;
+  color: var(--sakura-petal-a, #f5a3b3);
+  margin: 0;
+}
+
+/* ===== Gallery ===== */
+.coloring-gallery {
+  margin-top: 48px;
+}
+
+.coloring-gallery-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-ink, #f5f5f5);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.coloring-gallery-empty {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.5));
+}
+
+.coloring-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 14px;
+}
+
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 14px;
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+}
+
+.gallery-item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.gallery-item span {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted, rgba(255, 255, 255, 0.6));
+}
+
+/* ===== Light theme ===== */
+[data-theme="light"] .coloring-title,
+[data-theme="light"] .coloring-gallery-title {
+  color: var(--color-ink, #202124);
+}
+
+[data-theme="light"] .outline-thumb,
+[data-theme="light"] .coloring-toolbar,
+[data-theme="light"] .gallery-item {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ===================== RESPONSIVE ===================== */
+
+/* Tablet: canvas + toolbar vẫn cạnh nhau nhưng hẹp hơn */
+@media (max-width: 860px) {
+  .coloring-workspace {
+    justify-content: center;
+  }
+
+  .coloring-toolbar {
+    max-width: 100%;
+  }
+}
+
+/* Mobile: xếp dọc — canvas trước, toolbar dưới để bé thấy hình trước */
+@media (max-width: 640px) {
+  .coloring-page {
+    padding: 16px 12px 48px;
+  }
+
+  .coloring-title {
+    font-size: 1.5rem;
+  }
+
+  .coloring-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+
+  .outline-picker {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    margin: 0 -12px 20px;
+    padding: 0 12px 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .outline-picker::-webkit-scrollbar { display: none; }
+
+  .outline-thumb {
+    flex-shrink: 0;
+    padding: 10px 14px;
+  }
+
+  .coloring-workspace {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Canvas co theo chiều rộng màn hình, giữ tỉ lệ vuông */
+  .coloring-canvas-wrap {
+    width: 100% !important;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+  }
+
+  .coloring-canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .coloring-toolbar {
+    width: 100%;
+    max-width: 400px;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .palette-swatch {
+    width: 38px;
+    height: 38px;
+  }
+
+  .brush-size-btn,
+  .tool-btn {
+    font-size: 0.8rem;
+  }
+}
+
+/* Màn hình rất nhỏ */
+@media (max-width: 380px) {
+  .coloring-title {
+    font-size: 1.3rem;
+  }
+
+  .outline-thumb-emoji {
+    font-size: 1.5rem;
+  }
+
+  .palette-swatch {
+    width: 34px;
+    height: 34px;
+  }
+
+  .tool-btn {
+    min-width: 78px;
+    font-size: 0.75rem;
+    padding: 8px 8px;
+  }
+}

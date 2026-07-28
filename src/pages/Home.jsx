@@ -22,14 +22,17 @@ const CATEGORIES = [
     description: "Mở rộng vốn từ tiếng Anh cùng hình ảnh sinh động.",
   },
   {
-    to: "/grade/color",
+    // ⭐ Đã xây xong (ColoringGame.jsx) — không còn là "coming soon" nữa.
+    to: "/coloring",
     emoji: "🎨",
     badgeClass: "badge-yellow",
     title: "Sáng Tạo Màu Sắc",
     description: "Tự do tô màu, sáng tạo theo trí tưởng tượng của bé.",
   },
   {
-    to: "/grade/animal",
+    // ⭐ Animal đã tách riêng khỏi cấu trúc CHAPTERS[grade], nên vào
+    // thẳng /animal thay vì phải chọn lớp trước như math/english.
+    to: "/animal",
     emoji: "🐰",
     badgeClass: "badge-green",
     title: "Đố Vui Động Vật",
@@ -97,16 +100,38 @@ const AnnouncementNotice = ({ notice, onDismiss }) => {
   );
 };
 
-const CategoryCard = ({ to, emoji, badgeClass, title, description, locked }) => (
-  <Link to={to} className="category-card" aria-label={`Vào chơi ${title}`}>
-    <span className={`category-badge ${badgeClass}`} aria-hidden="true">
-      {emoji}
-    </span>
-    <h3>{title}</h3>
-    <p>{description}</p>
-    {locked && <span className="category-lock">🔒 Đăng nhập để bắt đầu</span>}
-  </Link>
-);
+const CategoryCard = ({ to, emoji, badgeClass, title, description, locked, soon }) => {
+  // ⭐ "soon" (tính năng chưa xây) được ưu tiên kiểm tra trước "locked"
+  // (chưa đăng nhập) — nếu tính năng chưa tồn tại thì dù đã đăng nhập
+  // cũng không nên cho bấm vào.
+  if (soon) {
+    return (
+      <div
+        className="category-card category-card--soon"
+        aria-disabled="true"
+        aria-label={`${title} — Sắp ra mắt`}
+      >
+        <span className={`category-badge ${badgeClass}`} aria-hidden="true">
+          {emoji}
+        </span>
+        <h3>{title}</h3>
+        <p>{description}</p>
+        <span className="category-soon-badge">🚧 Sắp ra mắt</span>
+      </div>
+    );
+  }
+
+  return (
+    <Link to={to} className="category-card" aria-label={`Vào chơi ${title}`}>
+      <span className={`category-badge ${badgeClass}`} aria-hidden="true">
+        {emoji}
+      </span>
+      <h3>{title}</h3>
+      <p>{description}</p>
+      {locked && <span className="category-lock">🔒 Đăng nhập để bắt đầu</span>}
+    </Link>
+  );
+};
 
 const Home = () => {
   const { user } = useAuth();

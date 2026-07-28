@@ -4,6 +4,17 @@ const OPTION_LETTERS = ["A", "B", "C", "D"];
 const QuestionCard = ({ question, selected, correctAnswer, revealed, flashState, onSelect }) => {
   return (
     <div className={`glass-card question-card${flashState ? ` flash-${flashState}` : ""}`}>
+      {/* ⭐ Chỉ hiện khi câu hỏi có ảnh (vd: Đố Vui Động Vật) — các trò khác không có field này nên tự bỏ qua */}
+      {question.imageUrl && (
+        <div className="question-image-wrap">
+          <img
+            src={question.imageUrl}
+            alt="Hình minh hoạ câu hỏi"
+            className="question-image"
+          />
+        </div>
+      )}
+
       <h2 className="question-text">{question.question}</h2>
       <div className="options-grid" role="group" aria-label="Các đáp án">
         {question.options.map((opt, idx) => {

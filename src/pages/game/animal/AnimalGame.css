@@ -1,0 +1,137 @@
+/* src/pages/game/animal/AnimalGame.css */
+
+.animal-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 16px 80px;
+  text-align: center;
+}
+
+.animal-status {
+  color: var(--color-text-muted);
+  margin-top: 24px;
+}
+.animal-status--error {
+  color: var(--color-danger);
+}
+
+/* Level grid */
+.animal-level-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+.animal-level-btn {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  border: none;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.animal-level-btn--locked {
+  background: #E3E9F5;
+  color: #A7B3CC;
+  cursor: not-allowed;
+}
+.animal-level-btn--unlocked {
+  background: white;
+  color: var(--color-text-dark);
+  border: 3px solid var(--color-accent-sky);
+  box-shadow: var(--shadow-glow);
+}
+.animal-level-btn--completed {
+  background: var(--color-navy, #1B2A4A);
+  color: white;
+  border: 3px solid var(--color-accent-yellow);
+}
+.animal-level-check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 0.9rem;
+}
+
+/* Play area */
+.animal-back-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.animal-instructions {
+  color: var(--color-text-muted);
+  margin-bottom: 20px;
+}
+
+.animal-matching-columns {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+.animal-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  max-width: 220px;
+}
+
+.animal-card {
+  background: white;
+  border: 3px solid #E3E9F5;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+}
+.animal-card img { width: 100%; border-radius: var(--radius-sm); }
+.animal-emoji { font-size: 2.2rem; }
+.animal-card--selected {
+  border-color: var(--color-accent-sky);
+}
+.animal-card--matched {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.animal-name-card {
+  background: white;
+  border: 3px solid #E3E9F5;
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+}
+.animal-name-card--matched {
+  background: var(--color-accent-mint);
+  color: white;
+  opacity: 0.7;
+  cursor: default;
+}
+.animal-name-card--wrong {
+  border-color: var(--color-danger);
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.animal-result {
+  margin-top: 32px;
+}
+.animal-result h2 {
+  font-family: var(--font-display);
+  color: var(--color-text-dark);
+}

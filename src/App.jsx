@@ -3,24 +3,32 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
 
 import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/footer.jsx";
 import AuroraBackground from "./components/AuroraBackground.jsx";
 
-// ⭐ PAGES
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
 
-const SubjectSelect = lazy(() => import("./pages/SubjectSelect.jsx"));   // ⭐ CHỌN MÔN
-const GradeSelect = lazy(() => import("./pages/GradeSelect.jsx"));       // ⭐ CHỌN LỚP
-const LevelMap = lazy(() => import("./pages/LevelMap.jsx"));             // ⭐ CHƯƠNG (LEVEL)
+const SubjectSelect = lazy(() => import("./pages/SubjectSelect.jsx"));
+const GradeSelect = lazy(() => import("./pages/GradeSelect.jsx"));
+const LevelMap = lazy(() => import("./pages/LevelMap.jsx"));
 
-const ModeSelect = lazy(() => import("./pages/ModeSelect.jsx"));         // ⭐ CHỌN CHẾ ĐỘ
-const GamePlay = lazy(() => import("./pages/GamePlay.jsx"));             // ⭐ QUIZ
-const GamePlayRunner = lazy(() => import("./pages/GamePlayRunner.jsx")); // ⭐ RUNNER
+const ModeSelect = lazy(() => import("./pages/ModeSelect.jsx"));
+const GamePlay = lazy(() => import("./pages/game/quiz/GamePlay.jsx"));
+const GamePlayRunner = lazy(() => import("./pages/game/quiz/GamePlayRunner.jsx"));
+
+// ⭐ MỚI: 2 game độc lập, không cần chọn lớp trước
+const ColoringGame = lazy(() => import("./pages/game/coloring/ColoringGame.jsx"));
+const AnimalGame = lazy(() => import("./pages/game/animal/AnimalGame.jsx"));
 
 const Result = lazy(() => import("./pages/Result.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const NoticesAdmin = lazy(() => import("./pages/admin/NoticesAdmin.jsx"));
 const Contact = lazy(() => import("./pages/Contact.jsx"));
+
+// ⭐ MỚI: 2 trang thông tin
+const Education = lazy(() => import("./pages/Education.jsx"));
+const Parents = lazy(() => import("./pages/Parents.jsx"));
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
@@ -29,7 +37,7 @@ const PrivateRoute = ({ children }) => {
 
 const PrivateAdminRoute = ({ children }) => {
   const { user } = useAuth();
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
   if (user.role !== "admin") return <Navigate to="/" replace />;
   return children;
 };
@@ -44,12 +52,14 @@ function App() {
         <Suspense fallback={<div className="page-loading">Đang tải... ⏳</div>}>
 
           <Routes>
-            {/* ⭐ PUBLIC */}
+            {/* PUBLIC */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/about" element={<Education />} />
+            <Route path="/parents" element={<Parents />} />
+            <Route path="/contact" element={<Contact />} />
 
-            {/* ⭐ PRIVATE FLOW MỚI */}
-            {/* 1) Chọn môn */}
+            {/* FLOW MATH/ENGLISH */}
             <Route
               path="/subjects"
               element={
@@ -58,8 +68,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* 2) Chọn lớp */}
             <Route
               path="/grade/:subject"
               element={
@@ -68,8 +76,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* 3) Hiện chương (Level Map) */}
             <Route
               path="/map/:subject/:grade"
               element={
@@ -78,8 +84,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* 4) Chọn chế độ */}
             <Route
               path="/mode/:subject/:grade/:level"
               element={
@@ -88,8 +92,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* 5) Chế độ Quiz */}
             <Route
               path="/play/:subject/:grade/:level"
               element={
@@ -98,8 +100,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* 6) Chế độ Runner */}
             <Route
               path="/runner/:subject/:grade/:level"
               element={
@@ -109,7 +109,24 @@ function App() {
               }
             />
 
-            {/* ⭐ RESULT */}
+            {/* GAME ĐỘC LẬP — không qua GradeSelect/LevelMap */}
+            <Route
+              path="/coloring"
+              element={
+                <PrivateRoute>
+                  <ColoringGame />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/animal"
+              element={
+                <PrivateRoute>
+                  <AnimalGame />
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/result"
               element={
@@ -118,8 +135,6 @@ function App() {
                 </PrivateRoute>
               }
             />
-
-            {/* ⭐ PROFILE */}
             <Route
               path="/profile"
               element={
@@ -129,10 +144,6 @@ function App() {
               }
             />
 
-            {/* ⭐ CONTACT */}
-            <Route path="/contact" element={<Contact />} />
-
-            {/* ⭐ ADMIN */}
             <Route
               path="/admin/notices"
               element={
@@ -142,12 +153,13 @@ function App() {
               }
             />
 
-            {/* ⭐ FALLBACK */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
 
         </Suspense>
       </main>
+
+      <Footer />
     </div>
   );
 }

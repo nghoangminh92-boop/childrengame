@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import api from "../api/axios.js";
-import { useSound } from "../context/SoundContext.jsx";
-import HeartsDisplay from "../components/HeartsDisplay.jsx";
-import ProgressBar from "../components/ProgressBar.jsx";
-import QuestionCard from "../components/QuestionCard.jsx";
-import CharacterSprite from "../components/CharacterSprite.jsx";
+import api from "../../../api/axios.js";
+import { useSound } from "../../../context/SoundContext.jsx";
+import HeartsDisplay from "../../../components/HeartsDisplay.jsx";
+import ProgressBar from "../../../components/ProgressBar.jsx";
+import QuestionCard from "../../../components/QuestionCard.jsx";
+import CharacterSprite from "../../../components/CharacterSprite.jsx";
 import "../styles/runner.css";
 
 const MAX_LIVES = 3;
