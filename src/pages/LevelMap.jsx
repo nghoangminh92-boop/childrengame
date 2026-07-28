@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import LevelNode from "../components/LevelNode.jsx";
-   import "./LevelMap.css";
+import { useAuth } from "../context/AuthContext.jsx";
+import "./LevelMap.css";
 
 const SUBJECT_LABEL = { math: "Toán học 🧮", english: "Tiếng Anh 🔤" };
 
 const LevelMap = () => {
   const { subject } = useParams();
+  const { user } = useAuth(); // ⭐ Lấy grade từ user
   const navigate = useNavigate();
+
   const [levels, setLevels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,26 +19,32 @@ const LevelMap = () => {
   useEffect(() => {
     let active = true;
     setLoading(true);
+
     api
-      .get("/game/levels", { params: { type: subject } })
+      .get("/game/levels", {
+        params: {
+          type: subject,
+          grade: user.grade || 1, // ⭐ Gửi grade lên backend
+        },
+      })
       .then(({ data }) => {
         if (active) setLevels(data.levels);
       })
       .catch((err) => {
-        if (active) setError(err.response?.data?.message || "Không tải được danh sách level");
+        if (active)
+          setError(err.response?.data?.message || "Không tải được danh sách chương học");
       })
       .finally(() => active && setLoading(false));
+
     return () => {
       active = false;
     };
-  }, [subject]);
+  }, [subject, user]);
 
-  // ⭐ CHỈ SỬA HÀM NÀY
+  // ⭐ Điều hướng đúng route mới
   const handleSelectLevel = (level, status) => {
     if (status === "locked") return;
-
-    // ⭐ CHUYỂN SANG TRANG CHỌN CHẾ ĐỘ
-    navigate(`/mode/${subject}/${level}`);
+    navigate(`/play/${subject}/${user.grade}/${level}`);
   };
 
   if (!["math", "english"].includes(subject)) {
@@ -52,7 +61,7 @@ const LevelMap = () => {
         {SUBJECT_LABEL[subject]}
       </h1>
 
-      {loading && <p style={{ textAlign: "center" }}>Đang tải bản đồ level... 🗺️</p>}
+      {loading && <p style={{ textAlign: "center" }}>Đang tải chương học... 🗺️</p>}
       {error && (
         <p className="form-error" style={{ textAlign: "center" }}>
           {error}
