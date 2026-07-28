@@ -1,63 +1,40 @@
+// Home.jsx
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 import api from "../api/axios";
-import {
-  IconMath,
-  IconEnglish,
-  IconController,
-  IconBadge,
-  IconStreak,
-  IconTrophy,
-  IconTarget,
-  IconKid,
-} from "../components/icon/Icons.jsx";
+import { IconTrophy, IconBadge, IconTarget, IconKid } from "../components/icon/Icons.jsx";
 import "./Home.css";
 
-// ⭐ SỬA ĐÚNG ROUTE MỚI: /grade/:subject
-const SUBJECTS = [
+const CATEGORIES = [
   {
     to: "/grade/math",
-    Icon: IconMath,
-    title: "Toán học",
-    description: "Chinh phục 10 level từ dễ đến khó",
+    emoji: "🍎",
+    badgeClass: "badge-red",
+    title: "Học Số Học",
+    description: "Rèn luyện phép cộng, trừ, nhân, chia qua từng level.",
   },
   {
     to: "/grade/english",
-    Icon: IconEnglish,
-    title: "Tiếng Anh",
-    description: "Học từ vựng & ngữ pháp cơ bản",
-  },
-];
-
-const FEATURES = [
-  {
-    Icon: IconController,
-    title: "Học qua trò chơi",
-    description: "3 chế độ chơi: Quiz, Runner, Adventure — mỗi bài học là một thử thách thú vị.",
+    emoji: "🔤",
+    badgeClass: "badge-blue",
+    title: "Học Từ Vựng",
+    description: "Mở rộng vốn từ tiếng Anh cùng hình ảnh sinh động.",
   },
   {
-    Icon: IconBadge,
-    title: "Huy hiệu & thành tích",
-    description: "Ghi nhận mỗi cột mốc bé đạt được, từ nửa chặng đường đến nhà vô địch.",
+    to: "/grade/color",
+    emoji: "🎨",
+    badgeClass: "badge-yellow",
+    title: "Sáng Tạo Màu Sắc",
+    description: "Tự do tô màu, sáng tạo theo trí tưởng tượng của bé.",
   },
   {
-    Icon: IconStreak,
-    title: "Streak mỗi ngày",
-    description: "Duy trì chuỗi ngày học liên tiếp để nhận thưởng và giữ động lực học tập.",
+    to: "/grade/animal",
+    emoji: "🐰",
+    badgeClass: "badge-green",
+    title: "Đố Vui Động Vật",
+    description: "Ghép hình, nhận diện âm thanh các loài động vật.",
   },
-  {
-    Icon: IconTrophy,
-    title: "Bảng xếp hạng",
-    description: "So tài với bạn bè, xem ai là người dẫn đầu bảng điểm mỗi tuần.",
-  },
-];
-
-const HOW_IT_WORKS = [
-  { step: "1", text: "Đăng nhập nhanh bằng tài khoản Google, không cần mật khẩu" },
-  { step: "2", text: "Chọn môn học và level phù hợp với trình độ" },
-  { step: "3", text: "Trả lời câu hỏi, vượt qua thử thách, thu thập sao và huy hiệu" },
-  { step: "4", text: "Theo dõi tiến bộ, mở khóa level mới mỗi ngày" },
 ];
 
 const NOTICE_TYPES = {
@@ -120,29 +97,15 @@ const AnnouncementNotice = ({ notice, onDismiss }) => {
   );
 };
 
-const SubjectCard = ({ to, Icon, title, description }) => (
-  <Link to={to} className="glass-card subject-card" aria-label={`Vào học ${title}`}>
-    <Icon size={44} className="subject-icon" />
+const CategoryCard = ({ to, emoji, badgeClass, title, description, locked }) => (
+  <Link to={to} className="category-card" aria-label={`Vào chơi ${title}`}>
+    <span className={`category-badge ${badgeClass}`} aria-hidden="true">
+      {emoji}
+    </span>
     <h3>{title}</h3>
     <p>{description}</p>
+    {locked && <span className="category-lock">🔒 Đăng nhập để bắt đầu</span>}
   </Link>
-);
-
-const SubjectPreviewCard = ({ Icon, title, description }) => (
-  <div className="glass-card subject-card subject-card--preview">
-    <Icon size={44} className="subject-icon" />
-    <h3>{title}</h3>
-    <p>{description}</p>
-    <span className="subject-card-lock">Đăng nhập để bắt đầu</span>
-  </div>
-);
-
-const FeatureCard = ({ Icon, title, description }) => (
-  <div className="glass-card feature-card">
-    <Icon size={36} className="feature-icon-svg" />
-    <h3>{title}</h3>
-    <p>{description}</p>
-  </div>
 );
 
 const Home = () => {
@@ -206,84 +169,42 @@ const Home = () => {
     : [];
 
   return (
-    <section className="hero" aria-labelledby="home-title">
-      {!dataLoading && !noticeDismissed && (
-        <AnnouncementNotice notice={notice} onDismiss={handleDismissNotice} />
-      )}
+    <div className="home-page">
+      <section className="home-hero" aria-labelledby="home-title">
+        <div className="home-hero-overlay" />
+        <div className="home-hero-content">
+          {!dataLoading && !noticeDismissed && (
+            <AnnouncementNotice notice={notice} onDismiss={handleDismissNotice} />
+          )}
 
-      <h1 id="home-title">Học mà chơi, chơi mà học!</h1>
+          <h1 id="home-title">Khám Phá &amp; Học Vui Mỗi Ngày</h1>
+          <p className="hero-subtitle">Web Game Giáo Dục Dành Riêng Cho Bé</p>
 
-      <p className="hero-subtitle">
-        <strong>Children Game</strong> giúp bé chinh phục Toán học và Tiếng Anh
-        qua từng level thử thách, đầy sao và huy hiệu! Phù hợp cho bé từ 6–12
-        tuổi, học theo lộ trình cá nhân hóa.
-      </p>
+          {!dataLoading && !dataError && highlights.length > 0 && (
+            <ul className="hero-highlights">
+              {highlights.map((item) => (
+                <li key={item.label} className="highlight-item">
+                  <item.Icon size={20} />
+                  <span>{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
 
-      {!dataLoading && !dataError && highlights.length > 0 && (
-        <ul className="hero-highlights">
-          {highlights.map((item) => (
-            <li key={item.label} className="highlight-item">
-              <item.Icon size={20} />
-              <span>{item.label}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {user ? (
-        <div className="subject-grid">
-          {SUBJECTS.map((subject) => (
-            <SubjectCard key={subject.to} {...subject} />
-          ))}
+          {!user && (
+            <Link to="/login" className="btn-primary btn-large">
+              Chơi Ngay!
+            </Link>
+          )}
         </div>
-      ) : (
-        <>
-          <div className="hero-actions">
-            <Link to="/login" className="btn btn-primary">
-              Bắt đầu ngay
-            </Link>
-          </div>
+      </section>
 
-          <div className="home-section">
-            <h2 className="home-section-title">Khám phá các môn học</h2>
-            <div className="subject-grid subject-grid--preview">
-              {SUBJECTS.map((subject) => (
-                <SubjectPreviewCard key={subject.to} {...subject} />
-              ))}
-            </div>
-          </div>
-
-          <div className="home-section">
-            <h2 className="home-section-title">Vì sao bé sẽ thích Children Game?</h2>
-            <div className="feature-grid">
-              {FEATURES.map((feature) => (
-                <FeatureCard key={feature.title} {...feature} />
-              ))}
-            </div>
-          </div>
-
-          <div className="home-section">
-            <h2 className="home-section-title">Bắt đầu chỉ với 4 bước</h2>
-            <div className="steps-grid">
-              {HOW_IT_WORKS.map((item) => (
-                <div key={item.step} className="glass-card step-card">
-                  <div className="step-number">{item.step}</div>
-                  <p>{item.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="home-cta">
-            <h2>Sẵn sàng để bé bắt đầu học rồi đó!</h2>
-            <p>Đăng nhập ngay để mở khóa toàn bộ level và bắt đầu hành trình chinh phục kiến thức.</p>
-            <Link to="/login" className="btn btn-primary">
-              Đăng nhập với Google
-            </Link>
-          </div>
-        </>
-      )}
-    </section>
+      <section className="category-grid" aria-label="Danh sách môn học">
+        {CATEGORIES.map((cat) => (
+          <CategoryCard key={cat.to} {...cat} locked={!user} />
+        ))}
+      </section>
+    </div>
   );
 };
 

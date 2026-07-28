@@ -1,3 +1,4 @@
+// Navbar.jsx
 import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -11,6 +12,20 @@ const AVATAR_EMOJI = {
   dog: "🐶",
   robot: "🤖",
 };
+
+const NAV_LINKS = [
+  { to: "/", label: "Trang Chủ" },
+  { to: "/", label: "Danh Mục Game" },
+  { to: "/about", label: "Giáo Dục" },
+  { to: "/parents", label: "Bố Mẹ Cần Biết" },
+];
+
+const SUBJECTS = [
+  { to: "/grade/math", emoji: "➕", label: "Toán" },
+  { to: "/grade/english", emoji: "🔤", label: "Anh" },
+  { to: "/grade/color", emoji: "🎨", label: "Sáng tạo màu sắc" },
+  { to: "/grade/animal", emoji: "🐰", label: "Đố vui động vật" },
+];
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -44,52 +59,50 @@ const Navbar = () => {
   return (
     <header className="nav-header">
       <nav className="navbar">
-        {/* Brand */}
         <Link to="/" className="navbar__brand">
           <img src="/assets/logo.png" alt="Children Game" className="navbar__brand-logo" />
           <span className="navbar__brand-text">Children Game</span>
         </Link>
 
-        {/* ⭐ GIỮ NGUYÊN VỊ TRÍ SUBJECTS – CHỈ THÊM DROPDOWN */}
+        {/* Link tĩnh — luôn hiện, giống bản mẫu */}
+        <ul className="navbar__nav-links">
+          {NAV_LINKS.map((link, idx) => (
+            <li key={`${link.to}-${idx}`}>
+              <NavLink to={link.to} end={link.to === "/"}>
+                {link.label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+
+        {/* Dropdown chọn nhanh môn học — chỉ khi đã đăng nhập */}
         {user && (
-          <div className="navbar__subjects">
-            <div className="navbar__subjects-group" ref={subjectsRef}>
-              <button
-                type="button"
-                className="navbar__subjects-btn"
-                onClick={() => setSubjectsOpen((v) => !v)}
-              >
-                📚 Môn học ▾
-              </button>
+          <div className="navbar__subjects-group" ref={subjectsRef}>
+            <button
+              type="button"
+              className="navbar__subjects-btn"
+              onClick={() => setSubjectsOpen((v) => !v)}
+            >
+              📚 Môn học ▾
+            </button>
 
-              {subjectsOpen && (
-                <div className="navbar__subjects-dropdown">
+            {subjectsOpen && (
+              <div className="navbar__subjects-dropdown">
+                {SUBJECTS.map((s) => (
                   <NavLink
-                    to="/math"
+                    key={s.to}
+                    to={s.to}
                     className="navbar__subjects-item"
                     onClick={() => setSubjectsOpen(false)}
                   >
-                    ➕ Toán
+                    {s.emoji} {s.label}
                   </NavLink>
-
-                  <NavLink
-                    to="/english"
-                    className="navbar__subjects-item"
-                    onClick={() => setSubjectsOpen(false)}
-                  >
-                    🔤 Anh
-                  </NavLink>
-                </div>
-              )}
-            </div>
-
-            <Link to="/contact" className="navbar__contact-link">
-              📞 Contact
-            </Link>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Right */}
         <div className="navbar__right">
           <SoundToggle />
 
@@ -136,11 +149,9 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <div className="navbar__auth-links">
-              <Link to="/login" className="navbar__login-link">
-                Đăng nhập
-              </Link>
-            </div>
+            <Link to="/login" className="navbar__cta">
+              Chơi Ngay!
+            </Link>
           )}
 
           <button
@@ -155,34 +166,32 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="navbar__mobile-menu">
+          {NAV_LINKS.map((link, idx) => (
+            <NavLink
+              key={`${link.to}-m-${idx}`}
+              to={link.to}
+              end={link.to === "/"}
+              className="navbar__mobile-link"
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </NavLink>
+          ))}
+
           {user && (
             <>
-              <NavLink
-                to="/math"
-                className="navbar__mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                ➕ Toán
-              </NavLink>
-
-              <NavLink
-                to="/english"
-                className="navbar__mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                🔤 Anh
-              </NavLink>
-
-              <NavLink
-                to="/contact"
-                className="navbar__mobile-link"
-                onClick={() => setMobileOpen(false)}
-              >
-                📞 Liên hệ
-              </NavLink>
+              {SUBJECTS.map((s) => (
+                <NavLink
+                  key={s.to}
+                  to={s.to}
+                  className="navbar__mobile-link"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {s.emoji} {s.label}
+                </NavLink>
+              ))}
             </>
           )}
 
@@ -210,7 +219,7 @@ const Navbar = () => {
               className="navbar__mobile-link"
               onClick={() => setMobileOpen(false)}
             >
-              Đăng nhập
+              Chơi Ngay!
             </NavLink>
           )}
         </div>

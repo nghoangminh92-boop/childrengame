@@ -1,0 +1,45 @@
+/* ===== THEME MỚI — Tươi sáng, vui nhộn ===== */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&display=swap');
+
+:root {
+  /* Nền */
+  --bg-gradient: linear-gradient(180deg, #7C3AED 0%, #A855F7 45%, #EC4899 100%);
+
+  /* Màu thương hiệu */
+  --color-primary: #7C3AED;
+  --color-secondary: #EC4899;
+  --color-success: #34D399;
+  --color-danger: #FF6B6B;
+  --color-warning: #FFD23F;
+  --color-info: #38BDF8;
+
+  /* Chữ */
+  --color-text: #2B1055;
+  --color-text-light: #ffffff;
+
+  /* Thẻ/khung kính */
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(124, 58, 237, 0.15);
+
+  /* Bo góc */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+
+  /* Font */
+  --font-display: 'Baloo 2', sans-serif;
+  --font-body: 'Quicksand', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--color-text);
+  margin: 0;
+  min-height: 100vh;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}

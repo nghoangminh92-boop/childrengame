@@ -1,101 +1,112 @@
+/* navbar.css */
+
 .nav-header {
   position: sticky;
   top: 0;
-  z-index: 100;
-  background: rgba(20, 20, 35, 0.7);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 50;
+  background: transparent;
+  padding: 16px 16px 0;
 }
 
 .navbar {
+  max-width: 1080px;
+  margin: 0 auto;
+  background: #1B2A4A;
+  border-radius: 999px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 12px 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(27, 42, 74, 0.25);
 }
-.navbar__brand-logo {
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-/* Brand */
+
 .navbar__brand {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 800;
-  font-size: 1.15rem;
-  color: #fff;
   text-decoration: none;
-  flex-shrink: 0;
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
 }
-.navbar__brand-icon {
-  font-size: 1.4rem;
+.navbar__brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
 }
 
-/* Subjects (desktop) */
+/* Subjects dropdown */
 .navbar__subjects {
   display: flex;
-  gap: 4px;
-  flex: 1;
-  justify-content: center;
-}
-.navbar__subject-link {
-  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 10px;
-  color: rgba(255, 255, 255, 0.75);
-  text-decoration: none;
+  gap: 16px;
+}
+.navbar__subjects-group {
+  position: relative;
+}
+.navbar__subjects-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.92rem;
-  transition: background 0.15s ease, color 0.15s ease;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
 }
-.navbar__subject-link:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-}
-.navbar__subject-link.is-active {
-  background: linear-gradient(135deg, #7c5cff, #9d7bff);
-  color: #fff;
+.navbar__subjects-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* Right section */
+.navbar__subjects-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 28px rgba(27, 42, 74, 0.22);
+  padding: 8px;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 60;
+}
+.navbar__subjects-item {
+  display: block;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  color: #1B2A4A;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.navbar__subjects-item:hover {
+  background: #EEF2FB;
+}
+
+.navbar__contact-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.navbar__contact-link:hover {
+  color: white;
+}
+
+/* Right side */
 .navbar__right {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
+  gap: 14px;
 }
 
-.navbar__verify-btn {
-  background: #ffcc00;
-  color: #2a1f00;
-  border: none;
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.82rem;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: transform 0.12s ease, opacity 0.12s ease;
-}
-.navbar__verify-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-.navbar__verify-btn:disabled {
-  opacity: 0.7;
-  cursor: default;
-}
-
-/* User dropdown */
 .navbar__user-menu {
   position: relative;
 }
@@ -103,30 +114,29 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 6px 14px 6px 8px;
   border-radius: 999px;
-  padding: 6px 12px 6px 6px;
-  color: #fff;
   cursor: pointer;
-  transition: background 0.15s ease;
 }
 .navbar__avatar-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
 }
 .navbar__avatar-emoji {
+  font-size: 1.2rem;
+  background: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  font-size: 1.1rem;
 }
 .navbar__user-name {
+  font-size: 0.88rem;
   font-weight: 600;
-  font-size: 0.9rem;
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -134,216 +144,227 @@
 }
 .navbar__caret {
   font-size: 0.7rem;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .navbar__dropdown {
   position: absolute;
-  right: 0;
   top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 28px rgba(27, 42, 74, 0.22);
+  padding: 8px;
   min-width: 180px;
-  background: rgba(30, 28, 48, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 6px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   gap: 2px;
+  z-index: 60;
 }
 .navbar__dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  color: #1B2A4A;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
   background: none;
   border: none;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 500;
   cursor: pointer;
-  text-align: left;
-  width: 100%;
+  font-family: inherit;
 }
 .navbar__dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: #EEF2FB;
+}
+.navbar__dropdown-item--danger {
+  color: #E5484D;
 }
 .navbar__dropdown-item--danger:hover {
-  background: rgba(255, 80, 80, 0.15);
-  color: #ff8080;
+  background: #FDE2E2;
 }
 
-/* Auth links (chưa đăng nhập) */
-.navbar__auth-links {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 .navbar__login-link {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-.navbar__login-link:hover {
-  color: #fff;
-}
-.navbar__register-btn {
-  background: linear-gradient(135deg, #7c5cff, #9d7bff);
-  color: #fff;
-  padding: 8px 18px;
-  border-radius: 8px;
-  text-decoration: none;
+  background: var(--color-accent-sky);
+  color: #1B2A4A;
+  font-family: var(--font-display);
   font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 999px;
+  text-decoration: none;
   font-size: 0.9rem;
-  transition: transform 0.12s ease;
-}
-.navbar__register-btn:hover {
-  transform: translateY(-1px);
+  white-space: nowrap;
 }
 
-/* Hamburger (mobile) */
+/* Hamburger — chỉ hiện trên mobile */
 .navbar__hamburger {
   display: none;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   width: 32px;
   height: 32px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
 }
 .navbar__hamburger span {
   display: block;
-  height: 2px;
   width: 100%;
-  background: #fff;
+  height: 2.5px;
+  background: white;
   border-radius: 2px;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 .navbar__hamburger.is-open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(6.5px) rotate(45deg);
 }
 .navbar__hamburger.is-open span:nth-child(2) {
   opacity: 0;
 }
 .navbar__hamburger.is-open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-6.5px) rotate(-45deg);
 }
 
-/* Mobile dropdown menu */
 .navbar__mobile-menu {
-  display: none;
+  max-width: 1080px;
+  margin: 8px auto 0;
+  background: #1B2A4A;
+  border-radius: var(--radius-lg);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(27, 42, 74, 0.25);
+}
+.navbar__mobile-link {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.92rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+.navbar__mobile-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.navbar__mobile-link--danger {
+  color: #FF8A8F;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .navbar__subjects {
-    display: none;
-  }
-  .navbar__user-name {
-    display: none;
-  }
-  .navbar__auth-links .navbar__login-link {
+  .navbar__subjects,
+  .navbar__right .navbar__user-name {
     display: none;
   }
   .navbar__hamburger {
     display: flex;
   }
-  .navbar__mobile-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 8px 16px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .navbar__mobile-link {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 10px;
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.92rem;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-  }
-  .navbar__mobile-link:hover,
-  .navbar__mobile-link.is-active {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-  }
-  .navbar__mobile-link--danger:hover {
-    background: rgba(255, 80, 80, 0.15);
-    color: #ff8080;
-  }
+}
+/* navbar.css — thêm/thay đổi so với bản cũ, phần còn lại giữ nguyên */
+
+/* Link tĩnh trung tâm — MỚI, thay cho .navbar__subjects cũ */
+.navbar__nav-links {
+  list-style: none;
+  display: flex;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.navbar__nav-links a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.navbar__nav-links a:hover,
+.navbar__nav-links a.active {
+  color: white;
 }
 
-/* ===== Dropdown Môn học (CSS mới) ===== */
-
+/* Dropdown môn học — tách riêng khỏi .navbar__subjects, chỉ hiện khi đăng nhập */
 .navbar__subjects-group {
   position: relative;
 }
-
 .navbar__subjects-btn {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  padding: 8px 16px;
-  border-radius: 10px;
-  color: #fff;
+  color: white;
+  font-family: var(--font-body);
   font-weight: 600;
+  font-size: 0.88rem;
+  padding: 7px 14px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: 0.25s;
+  white-space: nowrap;
 }
-
 .navbar__subjects-btn:hover {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.18);
 }
-
 .navbar__subjects-dropdown {
   position: absolute;
-  top: 110%;
+  top: calc(100% + 8px);
   left: 0;
-  background: rgba(30,30,50,0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 10px;
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 28px rgba(27, 42, 74, 0.22);
+  padding: 8px;
+  min-width: 190px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  z-index: 999;
+  gap: 2px;
+  z-index: 60;
 }
-
 .navbar__subjects-item {
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 8px;
+  display: block;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  color: #1B2A4A;
   text-decoration: none;
-  transition: 0.25s;
-}
-
-.navbar__subjects-item:hover {
-  background: rgba(255,255,255,0.12);
-}
-
-.navbar__contact-link {
-  color: #fff;
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: 0.25s;
+}
+.navbar__subjects-item:hover {
+  background: #EEF2FB;
 }
 
-.navbar__contact-link:hover {
-  background: rgba(255,255,255,0.12);
+/* CTA "Chơi Ngay!" — nổi bật, thay cho .navbar__login-link */
+.navbar__cta {
+  background: #3EC6FF;
+  color: #1B2A4A;
+  font-family: var(--font-display);
+  font-weight: 700;
+  padding: 9px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(62, 198, 255, 0.4);
+}
+.navbar__cta:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .navbar__nav-links {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .navbar__subjects-group,
+  .navbar__right .navbar__user-name {
+    display: none;
+  }
+  .navbar__hamburger {
+    display: flex;
+  }
 }

@@ -35,7 +35,7 @@
   height: 44px;
   background: repeating-linear-gradient(
     to bottom,
-    var(--glass-border) 0 8px,
+    rgba(255, 255, 255, 0.5) 0 8px,
     transparent 8px 16px
   );
 }
@@ -47,13 +47,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-display);
   font-size: 1.8rem;
   font-weight: 800;
   cursor: pointer;
   border: none;
   position: relative;
   transition: transform 0.15s ease;
-  /* đảm bảo node không bị bóp méo trong flex column */
   flex-shrink: 0;
 }
 
@@ -61,7 +61,6 @@
   transform: scale(1.07);
 }
 
-/* Tôn trọng người dùng tắt hiệu ứng chuyển động */
 @media (prefers-reduced-motion: reduce) {
   .level-node {
     transition: none;
@@ -71,28 +70,37 @@
   }
 }
 
+/* Locked — mờ, tương phản thấp trên nền gradient tối */
 .level-node.locked {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
 }
 
+/* Unlocked — trắng nổi bật + viền phát sáng vàng/hồng, giống khung glow trong poster */
 .level-node.unlocked {
-  background: linear-gradient(135deg, var(--color-primary), #a78bfa);
-  color: white;
-  box-shadow: 0 8px 24px rgba(124, 92, 255, 0.5);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border: 4px solid var(--color-accent-sky);
+  box-shadow: var(--shadow-glow);
   animation: pulseGlow 2.4s ease-in-out infinite;
 }
 
+/* Completed — mint xanh lá, thể hiện đã chinh phục xong */
 .level-node.completed {
-  background: linear-gradient(135deg, var(--color-success), #6ee7b7);
-  color: #04371f;
-  box-shadow: 0 8px 24px rgba(52, 211, 153, 0.45);
+  background: linear-gradient(135deg, var(--color-accent-mint), #2FAE8C);
+  color: white;
+  border: 4px solid #2FAE8C;
+  box-shadow: 0 8px 24px rgba(76, 224, 179, 0.5);
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 8px 24px rgba(124, 92, 255, 0.5); }
-  50% { box-shadow: 0 8px 34px rgba(124, 92, 255, 0.85); }
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(255, 201, 60, 0.6), 0 0 20px rgba(214, 57, 155, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(255, 201, 60, 0.8), 0 0 32px rgba(214, 57, 155, 0.7);
+  }
 }
 
 .level-node .badge-icon {
@@ -103,8 +111,9 @@
 }
 
 .level-label {
+  font-family: var(--font-body);
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.85);
   margin-top: 6px;
   text-align: center;
   max-width: 100px;
@@ -112,7 +121,6 @@
 
 /* ===================== RESPONSIVE ===================== */
 
-/* Tablet: giảm zigzag lại một chút, node nhỏ hơn */
 @media (max-width: 768px) {
   .level-map {
     padding: 32px 16px 64px;
@@ -132,8 +140,6 @@
   }
 }
 
-/* Mobile: bỏ hẳn zigzag, xếp thẳng hàng giữa cho dễ bấm bằng ngón tay,
-   thu nhỏ node và khoảng cách để vừa màn hình hẹp */
 @media (max-width: 480px) {
   .level-map {
     padding: 24px 12px 48px;
@@ -173,7 +179,6 @@
   }
 }
 
-/* Điện thoại rất nhỏ (≤360px) */
 @media (max-width: 360px) {
   .level-node {
     width: 56px;
