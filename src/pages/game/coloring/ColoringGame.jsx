@@ -36,6 +36,7 @@ const ColoringGame = () => {
 
   const [gallery, setGallery] = useState([]);
   const [galleryLoading, setGalleryLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null); // ⭐ MỚI — theo dõi tranh đang xoá
 
   // ⭐ Đổi hình sẽ xoá canvas hiện tại (tránh nhầm nét vẽ cũ chồng lên hình mới)
   const handleSelectOutline = (outline) => {
@@ -84,6 +85,24 @@ const ColoringGame = () => {
       setSaveMessage(err.response?.data?.message || "Không thể lưu tranh, thử lại nhé.");
     } finally {
       setSaving(false);
+      setTimeout(() => setSaveMessage(""), 3000);
+    }
+  };
+
+  // ⭐ MỚI — xoá 1 tranh trong gallery
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm("Xoá tranh này? Không thể hoàn tác.");
+    if (!confirmed) return;
+
+    setDeletingId(id);
+    try {
+      await api.delete(`/coloring/${id}`);
+      setGallery((prev) => prev.filter((item) => item._id !== id));
+      setSaveMessage("Đã xoá tranh 🗑️");
+    } catch (err) {
+      setSaveMessage(err.response?.data?.message || "Không xoá được tranh, thử lại nhé.");
+    } finally {
+      setDeletingId(null);
       setTimeout(() => setSaveMessage(""), 3000);
     }
   };
@@ -219,6 +238,15 @@ const ColoringGame = () => {
                 <div key={item._id} className="gallery-item">
                   <img src={item.imageData} alt={item.title} />
                   <span>{item.title}</span>
+                  <button
+                    type="button"
+                    className="gallery-item-delete"
+                    onClick={() => handleDelete(item._id)}
+                    disabled={deletingId === item._id}
+                    aria-label={`Xoá tranh ${item.title}`}
+                  >
+                    {deletingId === item._id ? "Đang xoá..." : "🗑️ Xoá"}
+                  </button>
                 </div>
               ))}
             </div>
