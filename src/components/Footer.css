@@ -9,7 +9,17 @@
   gap: 16px;
   flex-wrap: wrap;
 }
+/* Thêm vào file CSS gốc chứa .app-shell (thường là App.css hoặc index.css) */
 
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1; /* ⭐ chiếm hết khoảng trống còn lại, đẩy Footer xuống đáy */
+}
 .footer-links {
   list-style: none;
   display: flex;
