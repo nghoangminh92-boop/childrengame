@@ -1,0 +1,101 @@
+/* src/components/AuroraBackground.css */
+
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* luôn nằm sau mọi nội dung, không cần dựa vào pointer-events để "ẩn" nó */
+  overflow: hidden;
+  pointer-events: none; /* ⭐ QUAN TRỌNG NHẤT — đảm bảo không bao giờ chặn click dù lỗi z-index ở đâu khác */
+}
+
+.aurora-bg * {
+  pointer-events: none; /* chốt chặn thêm 1 lớp cho toàn bộ phần tử con */
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+}
+
+.b1 {
+  width: 420px;
+  height: 420px;
+  top: -10%;
+  left: -8%;
+  background: var(--color-accent-sky, #3EC6FF);
+}
+
+.b2 {
+  width: 360px;
+  height: 360px;
+  top: 20%;
+  right: -10%;
+  background: var(--color-accent-mint, #4CE0B3);
+}
+
+.b3 {
+  width: 300px;
+  height: 300px;
+  bottom: -8%;
+  left: 15%;
+  background: var(--color-accent-yellow, #FFC93C);
+  opacity: 0.22;
+}
+
+.b4 {
+  width: 260px;
+  height: 260px;
+  bottom: 10%;
+  right: 12%;
+  background: var(--color-navy, #1B2A4A);
+  opacity: 0.12;
+}
+
+.aurora-particles {
+  position: absolute;
+  inset: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(62, 198, 255, 0.5);
+  animation-name: particleFloat;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+.aurora-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle {
+    animation: none;
+    opacity: 0;
+  }
+}
