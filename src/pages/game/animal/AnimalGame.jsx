@@ -116,8 +116,8 @@ const AnimalGame = () => {
   const fetchLevels = useCallback(async () => {
     setLevelsLoading(true);
     try {
-      const { data } = await api.get("/game/levels", {
-        params: { type: "animal", grade: ANIMAL_GRADE },
+      const { data } = await api.get("/animal/levels", {
+        params: { grade: ANIMAL_GRADE },
       });
       setLevels(data.levels || []);
       setLevelsError("");
@@ -138,7 +138,7 @@ const AnimalGame = () => {
     setActivityError("");
     setResult(null);
     try {
-      const { data } = await api.get("/game/animal-activity", {
+      const { data } = await api.get("/animal/activity", {
         params: { grade: ANIMAL_GRADE, level },
       });
       setActivity(data);
@@ -154,8 +154,7 @@ const AnimalGame = () => {
     const score = correctCount * 10;
 
     try {
-      const { data } = await api.post("/game/submit", {
-        type: "animal",
+      const { data } = await api.post("/animal/submit", {
         grade: ANIMAL_GRADE,
         level: activeLevel,
         correctCount,
