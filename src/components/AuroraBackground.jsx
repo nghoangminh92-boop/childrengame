@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-
+import "./AuroraBackground.css"; // ⭐ THÊM DÒNG NÀY
 // Nền Aurora Gradient + Mesh blobs + particle nhẹ + mouse parallax
 const AuroraBackground = () => {
   const bgRef = useRef(null);
