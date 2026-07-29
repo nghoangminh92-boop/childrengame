@@ -14,6 +14,7 @@ const Result = () => {
 
   const {
     subject,
+    grade, // ⭐ FIX: trước đây thiếu, dù GamePlay/GamePlayRunner đã navigate kèm grade trong state
     level,
     chapterTitle,
     passed,
@@ -27,13 +28,19 @@ const Result = () => {
 
   const starCount = percent >= 90 ? 3 : percent >= 70 ? 2 : 1;
 
-  // ⭐ Chọn đúng route "Chơi lại" theo chế độ vừa chơi
+  // ⭐ FIX: route thật là "/runner/:subject/:grade/:level" và
+  // "/play/:subject/:grade/:level" — cần đủ 3 phần, thiếu grade sẽ khiến
+  // đường dẫn không khớp route nào, rơi vào catch-all "*" và bị đá về "/".
   const replayPath =
     mode === "runner"
-      ? `/runner/${subject}/${level}`
+      ? `/runner/${subject}/${grade}/${level}`
       : mode === "adventure"
-      ? `/adventure/${subject}/${level}`
-      : `/play/${subject}/${level}`;
+      ? `/adventure/${subject}/${grade}/${level}`
+      : `/play/${subject}/${grade}/${level}`;
+
+  // ⭐ FIX: route bản đồ level thật là "/map/:subject/:grade", không phải
+  // "/levels/:subject" (route này không tồn tại trong App.jsx).
+  const levelMapPath = `/map/${subject}/${grade}`;
 
   return (
     <div className="result-overlay">
@@ -90,7 +97,7 @@ const Result = () => {
           >
             Chơi lại
           </button>
-          <Link to={`/levels/${subject}`} className="btn btn-primary">
+          <Link to={levelMapPath} className="btn btn-primary">
             {passed ? "Tiếp tục" : "Bản đồ level"}
           </Link>
         </div>
