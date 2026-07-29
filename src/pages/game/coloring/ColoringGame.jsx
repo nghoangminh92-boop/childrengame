@@ -236,8 +236,10 @@ const ColoringGame = () => {
             <div className="coloring-gallery-grid">
               {gallery.map((item) => (
                 <div key={item._id} className="gallery-item">
-                  <img src={item.imageData} alt={item.title} />
-                  <span>{item.title}</span>
+                  <div className="gallery-item-thumb">
+                    <img src={item.imageData} alt={item.title} />
+                  </div>
+                  <span className="gallery-item-title">{item.title}</span>
                   <button
                     type="button"
                     className="gallery-item-delete"

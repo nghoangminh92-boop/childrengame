@@ -260,48 +260,64 @@
 
 .coloring-gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
 }
 
 .gallery-item {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 8px;
-  border-radius: 14px;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
   background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  border: 2px solid var(--color-border, rgba(255, 255, 255, 0.1));
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--sakura-petal-a, rgba(245, 163, 179, 0.4));
+}
+
+.gallery-item-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .gallery-item img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  background: #fff;
+  display: block;
 }
 
-.gallery-item span {
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, rgba(255, 255, 255, 0.6));
+.gallery-item-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-ink, #202124);
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ⭐ MỚI — nút xoá tranh trong gallery */
 .gallery-item-delete {
   width: 100%;
-  margin-top: 2px;
-  padding: 6px 8px;
+  padding: 8px 8px;
   border-radius: 10px;
   border: 1px solid rgba(248, 113, 113, 0.4);
   background: rgba(248, 113, 113, 0.12);
-  color: #f87171;
-  font-size: 0.72rem;
+  color: #dc2626;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
-  min-height: 32px;
+  min-height: 36px;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
@@ -331,6 +347,10 @@
 [data-theme="light"] .gallery-item-delete {
   background: rgba(248, 113, 113, 0.1);
   border-color: rgba(248, 113, 113, 0.35);
+}
+
+[data-theme="light"] .gallery-item-title {
+  color: #202124;
 }
 
 /* ===================== RESPONSIVE ===================== */
