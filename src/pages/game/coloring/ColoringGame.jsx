@@ -1,13 +1,10 @@
-// ColoringGame.jsx
 import { useEffect, useRef, useState } from "react";
-import api from "../../../api/axios.js";   
+import api from "../../../api/axios.js";
 import { useAuth } from "../../../context/AuthContext.jsx";
 import ColoringCanvas from "./ColoringCanvas.jsx";
-import { OUTLINES, CATEGORIES } from "../../../api/outlines.js"; // ⭐ BỔ SUNG CATEGORIES  
+import { OUTLINES, CATEGORIES } from "../../../api/outlines.js";
 import "./ColoringGame.css";
 
-// ⭐ Bảng màu chính — 12 màu tươi sáng phù hợp trẻ em, cộng thêm ô
-// color-picker tuỳ chỉnh ở cuối.
 const PALETTE = [
   "#f87171", "#fb923c", "#fbbf24", "#facc15",
   "#a3e635", "#4ade80", "#34d399", "#22d3ee",
@@ -20,46 +17,54 @@ const BRUSH_SIZES = [
   { label: "Lớn", value: 28 },
 ];
 
+const STICKERS = [
+  { id: "star", emoji: "⭐" },
+  { id: "heart", emoji: "❤️" },
+  { id: "smile", emoji: "😄" },
+  { id: "flower", emoji: "🌸" },
+  { id: "sun", emoji: "☀️" },
+  { id: "sparkles", emoji: "✨" },
+];
+
 const CANVAS_SIZE = 400;
 
 const ColoringGame = () => {
   const { user } = useAuth();
   const canvasRef = useRef(null);
+  const workspaceRef = useRef(null);
 
-  // ⭐ BỔ SUNG — Quản lý danh sách hình (để hỗ trợ thêm hình mới) & Category được chọn
-  const [outlinesList, setOutlinesList] = useState(OUTLINES);
   const [selectedCategory, setSelectedCategory] = useState("all");
-
-  const [selectedOutline, setSelectedOutline] = useState(OUTLINES[0]);
+  const [selectedOutline, setSelectedOutline] = useState(OUTLINES[0] || {});
   const [brushColor, setBrushColor] = useState(PALETTE[0]);
   const [brushSize, setBrushSize] = useState(BRUSH_SIZES[1].value);
-  const [tool, setTool] = useState("brush"); // "brush" | "eraser"
+  const [tool, setTool] = useState("brush");
+
+  const [placedStickers, setPlacedStickers] = useState([]);
+  const [activeSticker, setActiveSticker] = useState(null);
+
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareImage, setShareImage] = useState(null);
 
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
 
   const [gallery, setGallery] = useState([]);
   const [galleryLoading, setGalleryLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState(null); // ⭐ MỚI — theo dõi tranh đang xoá
+  const [deletingId, setDeletingId] = useState(null);
 
-  // ⭐ BỔ SUNG — State cho Modal Thêm Tranh Mới
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newCategory, setNewCategory] = useState("animal");
-  const [newEmoji, setNewEmoji] = useState("🎨");
-  const [newSvgCode, setNewSvgCode] = useState("");
+  const safeOutlines = Array.isArray(OUTLINES) ? OUTLINES : [];
+  const safeCategories = Array.isArray(CATEGORIES) ? CATEGORIES : [];
 
-  // ⭐ BỔ SUNG — Lọc hình theo danh mục
   const filteredOutlines =
     selectedCategory === "all"
-      ? outlinesList
-      : outlinesList.filter((item) => item.category === selectedCategory);
+      ? safeOutlines
+      : safeOutlines.filter((item) => item.category === selectedCategory);
 
-  // ⭐ Đổi hình sẽ xoá canvas hiện tại (tránh nhầm nét vẽ cũ chồng lên hình mới)
   const handleSelectOutline = (outline) => {
-    if (outline.id === selectedOutline.id) return;
+    if (!outline || outline.id === selectedOutline?.id) return;
     setSelectedOutline(outline);
-    canvasRef.current?.clear();
+    canvasRef.current?.clear?.();
+    setPlacedStickers([]);
   };
 
   const fetchGallery = async () => {
@@ -71,7 +76,7 @@ const ColoringGame = () => {
       const { data } = await api.get("/coloring/mine");
       setGallery(data || []);
     } catch (err) {
-      // im lặng bỏ qua — gallery không tải được không nên chặn việc tô màu
+      // Bỏ qua lỗi nhẹ
     } finally {
       setGalleryLoading(false);
     }
@@ -79,8 +84,67 @@ const ColoringGame = () => {
 
   useEffect(() => {
     fetchGallery();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  const handlePickSticker = (sticker) => {
+    setActiveSticker((cur) => (cur?.id === sticker.id ? null : sticker));
+  };
+
+  const handleWorkspaceClick = (e) => {
+    if (!activeSticker || !workspaceRef.current) return;
+    const rect = workspaceRef.current.getBoundingClientRect();
+
+    const x = ((e.clientX - rect.left) / rect.width) * CANVAS_SIZE;
+    const y = ((e.clientY - rect.top) / rect.height) * CANVAS_SIZE;
+
+    setPlacedStickers((prev) => [
+      ...prev,
+      { uid: `${activeSticker.id}-${Date.now()}`, emoji: activeSticker.emoji, x, y },
+    ]);
+  };
+
+  const handleRemoveSticker = (uid) => {
+    setPlacedStickers((prev) => prev.filter((s) => s.uid !== uid));
+  };
+
+  const generateFullImageDataURL = () => {
+    return new Promise((resolve) => {
+      const baseCanvas = canvasRef.current?.getCanvasElement?.();
+      if (!baseCanvas) return resolve(null);
+
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = CANVAS_SIZE;
+      exportCanvas.height = CANVAS_SIZE;
+      const ctx = exportCanvas.getContext("2d");
+
+      ctx.drawImage(baseCanvas, 0, 0);
+
+      const svgBlob = new Blob([selectedOutline.svg || ""], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(svgBlob);
+      const img = new Image();
+
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        URL.revokeObjectURL(url);
+
+        placedStickers.forEach((s) => {
+          ctx.font = "32px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(s.emoji, s.x, s.y);
+        });
+
+        resolve(exportCanvas.toDataURL("image/png"));
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(baseCanvas.toDataURL("image/png"));
+      };
+
+      img.src = url;
+    });
+  };
 
   const handleSave = async () => {
     if (!user) {
@@ -90,9 +154,10 @@ const ColoringGame = () => {
     setSaving(true);
     setSaveMessage("");
     try {
-      const imageData = canvasRef.current.exportDataURL();
+      const imageData = await generateFullImageDataURL();
+
       await api.post("/coloring", {
-        title: selectedOutline.title,
+        title: selectedOutline.title || "Tranh tô màu",
         outlineId: selectedOutline.id,
         imageData,
       });
@@ -106,7 +171,6 @@ const ColoringGame = () => {
     }
   };
 
-  // ⭐ MỚI — xoá 1 tranh trong gallery
   const handleDelete = async (id) => {
     const confirmed = window.confirm("Xoá tranh này? Không thể hoàn tác.");
     if (!confirmed) return;
@@ -124,30 +188,65 @@ const ColoringGame = () => {
     }
   };
 
-  // ⭐ BỔ SUNG — Xử lý khi nhấn lưu bức tranh mới
-  const handleAddNewOutline = (e) => {
-    e.preventDefault();
-    if (!newTitle.trim() || !newSvgCode.trim()) return;
-
-    let formattedSvg = newSvgCode.trim();
-    if (!formattedSvg.includes("<g")) {
-      formattedSvg = `<g fill="none" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">${formattedSvg}</g>`;
+  const handleShare = async () => {
+    const baseCanvas = canvasRef.current?.getCanvasElement?.();
+    if (!baseCanvas) {
+      setSaveMessage("Chưa thể tạo ảnh chia sẻ lúc này.");
+      return;
     }
 
-    const newItem = {
-      id: `custom-${Date.now()}`,
-      title: newTitle,
-      thumbnail: newEmoji || "🎨",
-      category: newCategory,
-      viewBox: "0 0 400 400",
-      svg: formattedSvg,
+    const exportCanvas = document.createElement("canvas");
+    const PADDING = 40;
+    const FOOTER_HEIGHT = 70;
+    exportCanvas.width = CANVAS_SIZE + PADDING * 2;
+    exportCanvas.height = CANVAS_SIZE + PADDING * 2 + FOOTER_HEIGHT;
+    const ctx = exportCanvas.getContext("2d");
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+    ctx.strokeStyle = "#3EC6FF";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(4, 4, exportCanvas.width - 8, exportCanvas.height - 8);
+
+    ctx.drawImage(baseCanvas, PADDING, PADDING);
+
+    const svgBlob = new Blob([selectedOutline.svg || ""], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+
+    img.onload = () => {
+      ctx.drawImage(img, PADDING, PADDING, CANVAS_SIZE, CANVAS_SIZE);
+      URL.revokeObjectURL(url);
+
+      placedStickers.forEach((s) => {
+        ctx.font = "32px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(s.emoji, s.x + PADDING, s.y + PADDING);
+      });
+
+      ctx.fillStyle = "#1B2A4A";
+      ctx.font = "bold 22px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        `🎨 ${selectedOutline.title || "Tranh tô màu"} — Vẽ bởi ${user?.name || "bé"}`,
+        exportCanvas.width / 2,
+        exportCanvas.height - FOOTER_HEIGHT / 2
+      );
+
+      setShareImage(exportCanvas.toDataURL("image/png"));
+      setShowShareModal(true);
     };
 
-    setOutlinesList((prev) => [newItem, ...prev]);
-    setSelectedOutline(newItem);
-    setShowAddModal(false);
-    setNewTitle("");
-    setNewSvgCode("");
+    img.src = url;
+  };
+
+  const handleDownloadShare = () => {
+    if (!shareImage) return;
+    const link = document.createElement("a");
+    link.href = shareImage;
+    link.download = `${selectedOutline.title || "tranh"}-tranh-cua-be.png`;
+    link.click();
   };
 
   return (
@@ -155,43 +254,27 @@ const ColoringGame = () => {
       <h1 className="coloring-title">🎨 Sáng Tạo Màu Sắc</h1>
       <p className="coloring-subtitle">Chọn một hình rồi thoả sức tô màu theo ý thích của bé!</p>
 
-      {/* ⭐ BỔ SUNG — Nút mở Modal thêm tranh */}
-      <div style={{ textAlign: "center", marginBottom: "15px" }}>
+      <div className="category-tabs">
         <button
           type="button"
-          className="tool-btn"
-          style={{ background: "#ff9800", color: "#fff", border: "none" }}
-          onClick={() => setShowAddModal(true)}
+          className={`tool-btn ${selectedCategory === "all" ? "tool-btn--active" : ""}`}
+          onClick={() => setSelectedCategory("all")}
         >
-          ➕ Thêm hình vẽ mới
+          🌟 Tất cả
         </button>
+        {safeCategories.map((cat) => (
+          <button
+            key={cat.id}
+            type="button"
+            className={`tool-btn ${selectedCategory === cat.id ? "tool-btn--active" : ""}`}
+            onClick={() => setSelectedCategory(cat.id)}
+          >
+            {cat.emoji} {cat.label}
+          </button>
+        ))}
       </div>
 
-      {/* ⭐ BỔ SUNG — Thanh lọc danh mục (Tabs) */}
-      {CATEGORIES && (
-        <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginBottom: "12px", flexWrap: "wrap" }}>
-          <button
-            type="button"
-            className={`tool-btn ${selectedCategory === "all" ? "tool-btn--active" : ""}`}
-            onClick={() => setSelectedCategory("all")}
-          >
-            🌟 Tất cả
-          </button>
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              className={`tool-btn ${selectedCategory === cat.id ? "tool-btn--active" : ""}`}
-              onClick={() => setSelectedCategory(cat.id)}
-            >
-              {cat.emoji} {cat.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* ===== Chọn hình ===== */}
-      <div className="outline-picker" role="tablist" aria-label="Chọn hình để tô">
+      <div className="outline-picker" role="tablist">
         {filteredOutlines.map((outline) => (
           <button
             key={outline.id}
@@ -207,9 +290,13 @@ const ColoringGame = () => {
         ))}
       </div>
 
-      {/* ===== Khu vực tô màu ===== */}
       <div className="coloring-workspace">
-        <div className="coloring-canvas-wrap" style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}>
+        <div
+          ref={workspaceRef}
+          className="coloring-canvas-wrap"
+          onClick={handleWorkspaceClick}
+          style={activeSticker ? { cursor: "crosshair" } : undefined}
+        >
           <ColoringCanvas
             ref={canvasRef}
             width={CANVAS_SIZE}
@@ -217,17 +304,38 @@ const ColoringGame = () => {
             brushColor={brushColor}
             brushSize={brushSize}
             tool={tool}
+            disabled={Boolean(activeSticker)}
           />
-          {/* Lớp nét viền — pointer-events none để không chặn thao tác vẽ,
-              đè lên trên canvas để nét đen luôn hiển thị rõ trong lúc tô. */}
-          <svg
-            className="coloring-outline-overlay"
-            viewBox={selectedOutline.viewBox}
-            dangerouslySetInnerHTML={{ __html: selectedOutline.svg }}
-          />
+          {selectedOutline.svg && (
+            <svg
+              className="coloring-outline-overlay"
+              viewBox={selectedOutline.viewBox || "0 0 400 400"}
+              dangerouslySetInnerHTML={{ __html: selectedOutline.svg }}
+            />
+          )}
+
+          <div className="coloring-stickers-layer" style={{ pointerEvents: activeSticker ? "none" : "auto" }}>
+            {placedStickers.map((s) => (
+              <button
+                key={s.uid}
+                type="button"
+                className="placed-sticker"
+                style={{
+                  left: `${(s.x / CANVAS_SIZE) * 100}%`,
+                  top: `${(s.y / CANVAS_SIZE) * 100}%`,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveSticker(s.uid);
+                }}
+                title="Chạm để gỡ sticker"
+              >
+                {s.emoji}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* ===== Toolbar ===== */}
         <div className="coloring-toolbar">
           <div className="toolbar-group">
             <span className="toolbar-label">Màu sắc</span>
@@ -236,12 +344,13 @@ const ColoringGame = () => {
                 <button
                   key={color}
                   type="button"
-                  className={`palette-swatch ${brushColor === color && tool === "brush" ? "palette-swatch--active" : ""}`}
+                  className={`palette-swatch ${brushColor === color && tool === "brush" && !activeSticker ? "palette-swatch--active" : ""}`}
                   style={{ background: color }}
                   aria-label={`Chọn màu ${color}`}
                   onClick={() => {
                     setBrushColor(color);
                     setTool("brush");
+                    setActiveSticker(null);
                   }}
                 />
               ))}
@@ -252,8 +361,8 @@ const ColoringGame = () => {
                   onChange={(e) => {
                     setBrushColor(e.target.value);
                     setTool("brush");
+                    setActiveSticker(null);
                   }}
-                  aria-label="Chọn màu tuỳ chỉnh"
                 />
               </label>
             </div>
@@ -269,32 +378,59 @@ const ColoringGame = () => {
                   className={`brush-size-btn ${brushSize === size.value ? "brush-size-btn--active" : ""}`}
                   onClick={() => setBrushSize(size.value)}
                 >
-                  <span
-                    className="brush-size-dot"
-                    style={{ width: size.value * 0.7, height: size.value * 0.7 }}
-                  />
+                  <span className="brush-size-dot" style={{ width: size.value * 0.7, height: size.value * 0.7 }} />
                   {size.label}
                 </button>
               ))}
             </div>
           </div>
 
+          <div className="toolbar-group">
+            <span className="toolbar-label">Sticker trang trí</span>
+            <div className="sticker-row">
+              {STICKERS.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className={`sticker-btn ${activeSticker?.id === s.id ? "sticker-btn--active" : ""}`}
+                  onClick={() => handlePickSticker(s)}
+                >
+                  {s.emoji}
+                </button>
+              ))}
+            </div>
+            {activeSticker && <p className="sticker-hint">Chạm vào tranh để đặt sticker ✨</p>}
+          </div>
+
           <div className="toolbar-group toolbar-group--actions">
             <button
               type="button"
-              className={`tool-btn ${tool === "eraser" ? "tool-btn--active" : ""}`}
-              onClick={() => setTool((t) => (t === "eraser" ? "brush" : "eraser"))}
+              className={`tool-btn ${tool === "eraser" && !activeSticker ? "tool-btn--active" : ""}`}
+              onClick={() => {
+                setTool((t) => (t === "eraser" ? "brush" : "eraser"));
+                setActiveSticker(null);
+              }}
             >
               🧽 Tẩy
             </button>
-            <button type="button" className="tool-btn" onClick={() => canvasRef.current?.undo()}>
+            <button type="button" className="tool-btn" onClick={() => canvasRef.current?.undo?.()}>
               ↩️ Hoàn tác
             </button>
-            <button type="button" className="tool-btn" onClick={() => canvasRef.current?.clear()}>
+            <button
+              type="button"
+              className="tool-btn"
+              onClick={() => {
+                canvasRef.current?.clear?.();
+                setPlacedStickers([]);
+              }}
+            >
               🗑️ Xoá hết
             </button>
             <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
               {saving ? "Đang lưu..." : "💾 Lưu tranh"}
+            </button>
+            <button type="button" className="tool-btn tool-btn--share" onClick={handleShare}>
+              📤 Khoe tranh
             </button>
           </div>
 
@@ -302,7 +438,6 @@ const ColoringGame = () => {
         </div>
       </div>
 
-      {/* ===== Gallery tranh đã lưu ===== */}
       {user && (
         <div className="coloring-gallery">
           <h2 className="coloring-gallery-title">Tranh của bé</h2>
@@ -323,7 +458,6 @@ const ColoringGame = () => {
                     className="gallery-item-delete"
                     onClick={() => handleDelete(item._id)}
                     disabled={deletingId === item._id}
-                    aria-label={`Xoá tranh ${item.title}`}
                   >
                     {deletingId === item._id ? "Đang xoá..." : "🗑️ Xoá"}
                   </button>
@@ -334,38 +468,20 @@ const ColoringGame = () => {
         </div>
       )}
 
-      {/* ⭐ BỔ SUNG — Modal Form Thêm Tranh Mới */}
-      {showAddModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <form onSubmit={handleAddNewOutline} style={{ background: "#fff", padding: "20px", borderRadius: "12px", width: "350px", display: "flex", flexDirection: "column", gap: "10px" }}>
-            <h3 style={{ margin: 0 }}>➕ Thêm Bức Tranh Mới</h3>
-            <label style={{ fontSize: "14px" }}>
-              Tên tranh:
-              <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} required style={{ width: "100%", padding: "6px", marginTop: "4px" }} />
-            </label>
-            <label style={{ fontSize: "14px" }}>
-              Emoji:
-              <input type="text" value={newEmoji} onChange={(e) => setNewEmoji(e.target.value)} style={{ width: "100%", padding: "6px", marginTop: "4px" }} />
-            </label>
-            {CATEGORIES && (
-              <label style={{ fontSize: "14px" }}>
-                Danh mục:
-                <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)} style={{ width: "100%", padding: "6px", marginTop: "4px" }}>
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat.id} value={cat.id}>{cat.emoji} {cat.label}</option>
-                  ))}
-                </select>
-              </label>
-            )}
-            <label style={{ fontSize: "14px" }}>
-              Mã SVG (Nội dung nét vẽ):
-              <textarea rows={4} value={newSvgCode} onChange={(e) => setNewSvgCode(e.target.value)} required placeholder='Ví dụ: <circle cx="200" cy="200" r="100" />' style={{ width: "100%", padding: "6px", marginTop: "4px" }} />
-            </label>
-            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end", marginTop: "10px" }}>
-              <button type="button" className="tool-btn" onClick={() => setShowAddModal(false)}>Hủy</button>
-              <button type="submit" className="btn-primary">Lưu hình</button>
+      {showShareModal && (
+        <div className="share-modal-overlay" onClick={() => setShowShareModal(false)}>
+          <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+            <h2>Tranh của bé đã sẵn sàng! 🎉</h2>
+            {shareImage && <img src={shareImage} alt="Tranh hoàn thành" className="share-preview" />}
+            <div className="share-modal-actions">
+              <button type="button" className="btn-primary" onClick={handleDownloadShare}>
+                ⬇️ Tải ảnh về
+              </button>
+              <button type="button" className="tool-btn" onClick={() => setShowShareModal(false)}>
+                Đóng
+              </button>
             </div>
-          </form>
+          </div>
         </div>
       )}
     </section>
