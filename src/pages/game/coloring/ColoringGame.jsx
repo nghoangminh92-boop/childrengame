@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../../../api/axios.js";   
 import { useAuth } from "../../../context/AuthContext.jsx";
 import ColoringCanvas from "./ColoringCanvas.jsx";
-import { OUTLINES }  from "../../../api/outlines.js";  
+import { OUTLINES, CATEGORIES } from "../../../api/outlines.js"; // ⭐ BỔ SUNG CATEGORIES  
 import "./ColoringGame.css";
 
 // ⭐ Bảng màu chính — 12 màu tươi sáng phù hợp trẻ em, cộng thêm ô
@@ -26,6 +26,10 @@ const ColoringGame = () => {
   const { user } = useAuth();
   const canvasRef = useRef(null);
 
+  // ⭐ BỔ SUNG — Quản lý danh sách hình (để hỗ trợ thêm hình mới) & Category được chọn
+  const [outlinesList, setOutlinesList] = useState(OUTLINES);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
   const [selectedOutline, setSelectedOutline] = useState(OUTLINES[0]);
   const [brushColor, setBrushColor] = useState(PALETTE[0]);
   const [brushSize, setBrushSize] = useState(BRUSH_SIZES[1].value);
@@ -37,6 +41,19 @@ const ColoringGame = () => {
   const [gallery, setGallery] = useState([]);
   const [galleryLoading, setGalleryLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null); // ⭐ MỚI — theo dõi tranh đang xoá
+
+  // ⭐ BỔ SUNG — State cho Modal Thêm Tranh Mới
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newCategory, setNewCategory] = useState("animal");
+  const [newEmoji, setNewEmoji] = useState("🎨");
+  const [newSvgCode, setNewSvgCode] = useState("");
+
+  // ⭐ BỔ SUNG — Lọc hình theo danh mục
+  const filteredOutlines =
+    selectedCategory === "all"
+      ? outlinesList
+      : outlinesList.filter((item) => item.category === selectedCategory);
 
   // ⭐ Đổi hình sẽ xoá canvas hiện tại (tránh nhầm nét vẽ cũ chồng lên hình mới)
   const handleSelectOutline = (outline) => {
@@ -107,14 +124,75 @@ const ColoringGame = () => {
     }
   };
 
+  // ⭐ BỔ SUNG — Xử lý khi nhấn lưu bức tranh mới
+  const handleAddNewOutline = (e) => {
+    e.preventDefault();
+    if (!newTitle.trim() || !newSvgCode.trim()) return;
+
+    let formattedSvg = newSvgCode.trim();
+    if (!formattedSvg.includes("<g")) {
+      formattedSvg = `<g fill="none" stroke="#1a1a1a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">${formattedSvg}</g>`;
+    }
+
+    const newItem = {
+      id: `custom-${Date.now()}`,
+      title: newTitle,
+      thumbnail: newEmoji || "🎨",
+      category: newCategory,
+      viewBox: "0 0 400 400",
+      svg: formattedSvg,
+    };
+
+    setOutlinesList((prev) => [newItem, ...prev]);
+    setSelectedOutline(newItem);
+    setShowAddModal(false);
+    setNewTitle("");
+    setNewSvgCode("");
+  };
+
   return (
     <section className="coloring-page">
       <h1 className="coloring-title">🎨 Sáng Tạo Màu Sắc</h1>
       <p className="coloring-subtitle">Chọn một hình rồi thoả sức tô màu theo ý thích của bé!</p>
 
+      {/* ⭐ BỔ SUNG — Nút mở Modal thêm tranh */}
+      <div style={{ textAlign: "center", marginBottom: "15px" }}>
+        <button
+          type="button"
+          className="tool-btn"
+          style={{ background: "#ff9800", color: "#fff", border: "none" }}
+          onClick={() => setShowAddModal(true)}
+        >
+          ➕ Thêm hình vẽ mới
+        </button>
+      </div>
+
+      {/* ⭐ BỔ SUNG — Thanh lọc danh mục (Tabs) */}
+      {CATEGORIES && (
+        <div style={{ display: "flex", gap: "8px", justifyContent: "center", marginBottom: "12px", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            className={`tool-btn ${selectedCategory === "all" ? "tool-btn--active" : ""}`}
+            onClick={() => setSelectedCategory("all")}
+          >
+            🌟 Tất cả
+          </button>
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              className={`tool-btn ${selectedCategory === cat.id ? "tool-btn--active" : ""}`}
+              onClick={() => setSelectedCategory(cat.id)}
+            >
+              {cat.emoji} {cat.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* ===== Chọn hình ===== */}
       <div className="outline-picker" role="tablist" aria-label="Chọn hình để tô">
-        {OUTLINES.map((outline) => (
+        {filteredOutlines.map((outline) => (
           <button
             key={outline.id}
             type="button"
@@ -253,6 +331,41 @@ const ColoringGame = () => {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ⭐ BỔ SUNG — Modal Form Thêm Tranh Mới */}
+      {showAddModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <form onSubmit={handleAddNewOutline} style={{ background: "#fff", padding: "20px", borderRadius: "12px", width: "350px", display: "flex", flexDirection: "column", gap: "10px" }}>
+            <h3 style={{ margin: 0 }}>➕ Thêm Bức Tranh Mới</h3>
+            <label style={{ fontSize: "14px" }}>
+              Tên tranh:
+              <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} required style={{ width: "100%", padding: "6px", marginTop: "4px" }} />
+            </label>
+            <label style={{ fontSize: "14px" }}>
+              Emoji:
+              <input type="text" value={newEmoji} onChange={(e) => setNewEmoji(e.target.value)} style={{ width: "100%", padding: "6px", marginTop: "4px" }} />
+            </label>
+            {CATEGORIES && (
+              <label style={{ fontSize: "14px" }}>
+                Danh mục:
+                <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)} style={{ width: "100%", padding: "6px", marginTop: "4px" }}>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.emoji} {cat.label}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <label style={{ fontSize: "14px" }}>
+              Mã SVG (Nội dung nét vẽ):
+              <textarea rows={4} value={newSvgCode} onChange={(e) => setNewSvgCode(e.target.value)} required placeholder='Ví dụ: <circle cx="200" cy="200" r="100" />' style={{ width: "100%", padding: "6px", marginTop: "4px" }} />
+            </label>
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end", marginTop: "10px" }}>
+              <button type="button" className="tool-btn" onClick={() => setShowAddModal(false)}>Hủy</button>
+              <button type="submit" className="btn-primary">Lưu hình</button>
+            </div>
+          </form>
         </div>
       )}
     </section>
