@@ -323,6 +323,9 @@ const ColoringGame = () => {
             <svg
               className="coloring-outline-overlay"
               viewBox={selectedOutline.viewBox || "0 0 400 400"}
+              /* Decorative layer only — must never intercept pointer/touch
+                 events, otherwise clicks/taps never reach the canvas below. */
+              style={{ pointerEvents: "none" }}
               dangerouslySetInnerHTML={{ __html: selectedOutline.svg }}
             />
           )}
