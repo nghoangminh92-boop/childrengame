@@ -76,7 +76,7 @@ const ColoringGame = () => {
       const { data } = await api.get("/coloring/mine");
       setGallery(data || []);
     } catch (err) {
-      // Bỏ qua lỗi nhẹ
+      // Bỏ qua lỗi kết nối không quan trọng
     } finally {
       setGalleryLoading(false);
     }
@@ -107,6 +107,7 @@ const ColoringGame = () => {
     setPlacedStickers((prev) => prev.filter((s) => s.uid !== uid));
   };
 
+  // Hàm xuất Base64 đã khắc phục lỗi ảnh trắng/rỗng
   const generateFullImageDataURL = () => {
     return new Promise((resolve) => {
       const baseCanvas = canvasRef.current?.getCanvasElement?.();
@@ -117,16 +118,27 @@ const ColoringGame = () => {
       exportCanvas.height = CANVAS_SIZE;
       const ctx = exportCanvas.getContext("2d");
 
+      // Fill nền trắng chống ảnh bị trong suốt/đen
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+      // Vẽ cọ
       ctx.drawImage(baseCanvas, 0, 0);
 
-      const svgBlob = new Blob([selectedOutline.svg || ""], { type: "image/svg+xml;charset=utf-8" });
-      const url = URL.createObjectURL(svgBlob);
+      // Chuẩn hóa chuỗi SVG
+      let rawSvg = selectedOutline.svg || "";
+      if (!rawSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
+        rawSvg = rawSvg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
+      }
+
       const img = new Image();
+      const encodedSvg = encodeURIComponent(rawSvg);
 
       img.onload = () => {
+        // Vẽ viền
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        URL.revokeObjectURL(url);
 
+        // Vẽ sticker
         placedStickers.forEach((s) => {
           ctx.font = "32px sans-serif";
           ctx.textAlign = "center";
@@ -138,11 +150,10 @@ const ColoringGame = () => {
       };
 
       img.onerror = () => {
-        URL.revokeObjectURL(url);
         resolve(baseCanvas.toDataURL("image/png"));
       };
 
-      img.src = url;
+      img.src = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
     });
   };
 
@@ -195,9 +206,9 @@ const ColoringGame = () => {
       return;
     }
 
-    const exportCanvas = document.createElement("canvas");
     const PADDING = 40;
     const FOOTER_HEIGHT = 70;
+    const exportCanvas = document.createElement("canvas");
     exportCanvas.width = CANVAS_SIZE + PADDING * 2;
     exportCanvas.height = CANVAS_SIZE + PADDING * 2 + FOOTER_HEIGHT;
     const ctx = exportCanvas.getContext("2d");
@@ -210,13 +221,16 @@ const ColoringGame = () => {
 
     ctx.drawImage(baseCanvas, PADDING, PADDING);
 
-    const svgBlob = new Blob([selectedOutline.svg || ""], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(svgBlob);
+    let rawSvg = selectedOutline.svg || "";
+    if (!rawSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
+      rawSvg = rawSvg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+
     const img = new Image();
+    const encodedSvg = encodeURIComponent(rawSvg);
 
     img.onload = () => {
       ctx.drawImage(img, PADDING, PADDING, CANVAS_SIZE, CANVAS_SIZE);
-      URL.revokeObjectURL(url);
 
       placedStickers.forEach((s) => {
         ctx.font = "32px sans-serif";
@@ -226,10 +240,10 @@ const ColoringGame = () => {
       });
 
       ctx.fillStyle = "#1B2A4A";
-      ctx.font = "bold 22px sans-serif";
+      ctx.font = "bold 20px sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(
-        `🎨 ${selectedOutline.title || "Tranh tô màu"} — Vẽ bởi ${user?.name || "bé"}`,
+        `🎨 ${selectedOutline.title || "Tranh tô màu"} — Tác phẩm của ${user?.name || "bé"}`,
         exportCanvas.width / 2,
         exportCanvas.height - FOOTER_HEIGHT / 2
       );
@@ -238,7 +252,12 @@ const ColoringGame = () => {
       setShowShareModal(true);
     };
 
-    img.src = url;
+    img.onerror = () => {
+      setShareImage(baseCanvas.toDataURL("image/png"));
+      setShowShareModal(true);
+    };
+
+    img.src = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
   };
 
   const handleDownloadShare = () => {
@@ -378,7 +397,7 @@ const ColoringGame = () => {
                   className={`brush-size-btn ${brushSize === size.value ? "brush-size-btn--active" : ""}`}
                   onClick={() => setBrushSize(size.value)}
                 >
-                  <span className="brush-size-dot" style={{ width: size.value * 0.7, height: size.value * 0.7 }} />
+                  <span className="brush-size-dot" style={{ width: size.value * 0.6, height: size.value * 0.6 }} />
                   {size.label}
                 </button>
               ))}
@@ -440,11 +459,11 @@ const ColoringGame = () => {
 
       {user && (
         <div className="coloring-gallery">
-          <h2 className="coloring-gallery-title">Tranh của bé</h2>
+          <h2>Tranh của bé</h2>
           {galleryLoading ? (
-            <p className="coloring-gallery-empty">Đang tải...</p>
+            <p>Đang tải...</p>
           ) : gallery.length === 0 ? (
-            <p className="coloring-gallery-empty">Chưa có tranh nào được lưu.</p>
+            <p>Chưa có tranh nào được lưu.</p>
           ) : (
             <div className="coloring-gallery-grid">
               {gallery.map((item) => (
@@ -452,14 +471,14 @@ const ColoringGame = () => {
                   <div className="gallery-item-thumb">
                     <img src={item.imageData} alt={item.title} />
                   </div>
-                  <span className="gallery-item-title">{item.title}</span>
+                  <span>{item.title}</span>
                   <button
                     type="button"
                     className="gallery-item-delete"
                     onClick={() => handleDelete(item._id)}
                     disabled={deletingId === item._id}
                   >
-                    {deletingId === item._id ? "Đang xoá..." : "🗑️ Xoá"}
+                    {deletingId === item._id ? "..." : "🗑️ Xoá"}
                   </button>
                 </div>
               ))}

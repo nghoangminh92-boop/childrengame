@@ -1,7 +1,3 @@
-/* ==========================================
-   COLORING GAME RESPONSIVE STYLES
-   ========================================== */
-
 .coloring-page {
   width: 100%;
   max-width: 1100px;
@@ -24,7 +20,7 @@
   margin: 0 0 16px 0;
 }
 
-/* 1. Category Tabs & Outline Picker */
+/* Category & Picker */
 .category-tabs {
   display: flex;
   gap: 8px;
@@ -39,7 +35,7 @@
   overflow-x: auto;
   padding: 6px 4px 12px 4px;
   justify-content: flex-start;
-  -webkit-overflow-scrolling: touch; /* Cuộn mượt trên iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 640px) {
@@ -79,7 +75,7 @@
   margin-top: 2px;
 }
 
-/* 2. Coloring Workspace Layout (PC & Mobile Split) */
+/* Workspace */
 .coloring-workspace {
   display: flex;
   flex-direction: column;
@@ -96,22 +92,21 @@
   }
 }
 
-/* 3. Canvas Wrapper - Tự động co giãn theo màn hình */
+/* Canvas Wrapper Responsive */
 .coloring-canvas-wrap {
   position: relative;
   width: 100%;
   max-width: 400px;
-  aspect-ratio: 1 / 1; /* Luôn giữ khung vuông 1:1 */
+  aspect-ratio: 1 / 1;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   background: #ffffff;
-  touch-action: none; /* Khóa cuộn trang khi bé tô vẽ trên mobile */
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* Lớp vẽ cọ */
 .coloring-canvas-base {
   position: absolute;
   top: 0;
@@ -122,7 +117,6 @@
   touch-action: none;
 }
 
-/* Lớp viền SVG - BẮT BUỘC pointer-events: none */
 .coloring-outline-overlay {
   position: absolute;
   top: 0;
@@ -130,10 +124,9 @@
   width: 100%;
   height: 100%;
   z-index: 2;
-  pointer-events: none; /* Rất quan trọng: Giúp nét vẽ xuyên qua SVG */
+  pointer-events: none;
 }
 
-/* Lớp Sticker */
 .coloring-stickers-layer {
   position: absolute;
   top: 0;
@@ -154,7 +147,7 @@
   padding: 0;
 }
 
-/* 4. Toolbar Công Cụ */
+/* Toolbar */
 .coloring-toolbar {
   width: 100%;
   max-width: 400px;
@@ -198,7 +191,6 @@
   width: 100%;
 }
 
-/* Nút chọn màu to rõ cho ngón tay trên mobile */
 .palette-swatch {
   width: 36px;
   height: 36px;
@@ -228,7 +220,6 @@
   cursor: pointer;
 }
 
-/* Nút công cụ chung */
 .brush-size-btn,
 .sticker-btn,
 .tool-btn {
@@ -299,7 +290,7 @@
   margin-top: 4px;
 }
 
-/* 5. Modal & Gallery */
+/* Modal & Gallery */
 .share-modal-overlay {
   position: fixed;
   inset: 0;

@@ -53,12 +53,11 @@ const ColoringCanvas = forwardRef(
       exportDataURL: () => canvasRef.current?.toDataURL("image/png") || "",
     }));
 
-    // Tính chính xác tọa độ kể cả khi canvas bị thu nhỏ trên Mobile
     const getCoordinates = (e) => {
       const canvas = canvasRef.current;
       if (!canvas) return { x: 0, y: 0 };
       const rect = canvas.getBoundingClientRect();
-      
+
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
 
@@ -101,8 +100,7 @@ const ColoringCanvas = forwardRef(
 
     const draw = (e) => {
       if (!isDrawingRef.current || disabled) return;
-      
-      // Ngăn chặn cuộn màn hình điện thoại khi tô màu
+
       if (e.cancelable) e.preventDefault();
 
       const canvas = canvasRef.current;
