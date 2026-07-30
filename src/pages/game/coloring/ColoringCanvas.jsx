@@ -4,25 +4,21 @@ const ColoringCanvas = forwardRef(
   ({ width = 400, height = 400, brushColor = "#f87171", brushSize = 16, tool = "brush", disabled = false }, ref) => {
     const canvasRef = useRef(null);
     const isDrawingRef = useRef(false);
-    const historyRef = useRef([]); // Lưu lịch sử vẽ để Undo
+    const historyRef = useRef([]);
 
-    // Khởi tạo và lưu trạng thái ban đầu (canvas trắng)
     useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
 
-      // Cấu hình nét vẽ mượt
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
-      // Lưu frame trắng ban đầu nếu history rỗng
       if (historyRef.current.length === 0) {
         saveState();
       }
     }, []);
 
-    // Lưu trạng thái canvas vào lịch sử
     const saveState = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -30,13 +26,11 @@ const ColoringCanvas = forwardRef(
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       historyRef.current.push(imageData);
 
-      // Giới hạn tối đa 20 bước hoàn tác để tránh tốn bộ nhớ
       if (historyRef.current.length > 20) {
         historyRef.current.shift();
       }
     };
 
-    // Bộc lộ các hàm public cho component cha (ColoringGame) gọi qua ref
     useImperativeHandle(ref, () => ({
       clear: () => {
         const canvas = canvasRef.current;
@@ -49,10 +43,8 @@ const ColoringCanvas = forwardRef(
       undo: () => {
         const canvas = canvasRef.current;
         if (!canvas || historyRef.current.length <= 1) return;
-        
-        // Bỏ trạng thái hiện tại
+
         historyRef.current.pop();
-        // Lấy lại trạng thái trước đó
         const previousState = historyRef.current[historyRef.current.length - 1];
         const ctx = canvas.getContext("2d");
         ctx.putImageData(previousState, 0, 0);
@@ -61,11 +53,12 @@ const ColoringCanvas = forwardRef(
       exportDataURL: () => canvasRef.current?.toDataURL("image/png") || "",
     }));
 
-    // Tính tọa độ điểm chạm/chuột chính xác theo canvas
+    // Tính chính xác tọa độ kể cả khi canvas bị thu nhỏ trên Mobile
     const getCoordinates = (e) => {
       const canvas = canvasRef.current;
       if (!canvas) return { x: 0, y: 0 };
       const rect = canvas.getBoundingClientRect();
+      
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
 
@@ -102,14 +95,16 @@ const ColoringCanvas = forwardRef(
         ctx.lineWidth = brushSize;
       }
 
-      // Vẽ chấm tròn đơn lẻ tại điểm bắt đầu
       ctx.lineTo(x, y);
       ctx.stroke();
     };
 
     const draw = (e) => {
       if (!isDrawingRef.current || disabled) return;
-      e.preventDefault(); // Tránh cuộn trang trên thiết bị di động
+      
+      // Ngăn chặn cuộn màn hình điện thoại khi tô màu
+      if (e.cancelable) e.preventDefault();
+
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       const { x, y } = getCoordinates(e);
@@ -121,7 +116,7 @@ const ColoringCanvas = forwardRef(
     const stopDrawing = () => {
       if (!isDrawingRef.current) return;
       isDrawingRef.current = false;
-      saveState(); // Lưu lại nét vẽ sau khi thả chuột/tay
+      saveState();
     };
 
     return (

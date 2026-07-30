@@ -1,45 +1,59 @@
-/* Styling chính cho trang Tô màu */
+/* ==========================================
+   COLORING GAME RESPONSIVE STYLES
+   ========================================== */
+
 .coloring-page {
-  max-width: 960px;
+  width: 100%;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 24px 16px;
-  font-family: system-ui, -apple-system, sans-serif;
+  padding: 16px;
+  box-sizing: border-box;
   text-align: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .coloring-title {
-  font-size: 2.2rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   color: #1e293b;
-  margin-bottom: 8px;
+  margin: 0 0 4px 0;
 }
 
 .coloring-subtitle {
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
   color: #64748b;
-  margin-bottom: 24px;
+  margin: 0 0 16px 0;
 }
 
-/* Danh mục & Hình mẫu */
+/* 1. Category Tabs & Outline Picker */
 .category-tabs {
   display: flex;
   gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .outline-picker {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   overflow-x: auto;
-  padding: 8px 4px 16px;
-  justify-content: center;
+  padding: 6px 4px 12px 4px;
+  justify-content: flex-start;
+  -webkit-overflow-scrolling: touch; /* Cuộn mượt trên iOS */
+}
+
+@media (min-width: 640px) {
+  .outline-picker {
+    justify-content: center;
+  }
 }
 
 .outline-thumb {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 16px;
+  padding: 8px 12px;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   background: #ffffff;
@@ -50,22 +64,22 @@
 .outline-thumb--active {
   border-color: #3b82f6;
   background: #eff6ff;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
 .outline-thumb-emoji {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .outline-thumb-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #334155;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
-/* Workspace Canvas */
+/* 2. Coloring Workspace Layout (PC & Mobile Split) */
 .coloring-workspace {
   display: flex;
   flex-direction: column;
@@ -74,7 +88,7 @@
   margin-top: 10px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 850px) {
   .coloring-workspace {
     flex-direction: row;
     align-items: flex-start;
@@ -82,18 +96,22 @@
   }
 }
 
+/* 3. Canvas Wrapper - Tự động co giãn theo màn hình */
 .coloring-canvas-wrap {
   position: relative;
   width: 100%;
   max-width: 400px;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1 / 1; /* Luôn giữ khung vuông 1:1 */
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   background: #ffffff;
+  touch-action: none; /* Khóa cuộn trang khi bé tô vẽ trên mobile */
   user-select: none;
+  -webkit-user-select: none;
 }
 
+/* Lớp vẽ cọ */
 .coloring-canvas-base {
   position: absolute;
   top: 0;
@@ -104,6 +122,7 @@
   touch-action: none;
 }
 
+/* Lớp viền SVG - BẮT BUỘC pointer-events: none */
 .coloring-outline-overlay {
   position: absolute;
   top: 0;
@@ -111,9 +130,10 @@
   width: 100%;
   height: 100%;
   z-index: 2;
-  pointer-events: none;
+  pointer-events: none; /* Rất quan trọng: Giúp nét vẽ xuyên qua SVG */
 }
 
+/* Lớp Sticker */
 .coloring-stickers-layer {
   position: absolute;
   top: 0;
@@ -128,41 +148,45 @@
   transform: translate(-50%, -50%);
   background: transparent;
   border: none;
-  font-size: 2rem;
+  font-size: clamp(1.8rem, 6vw, 2.2rem);
   cursor: pointer;
   line-height: 1;
-  transition: transform 0.1s ease;
+  padding: 0;
 }
 
-.placed-sticker:hover {
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-/* Toolbar Công cụ */
+/* 4. Toolbar Công Cụ */
 .coloring-toolbar {
   width: 100%;
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   background: #f8fafc;
-  padding: 20px;
+  padding: 16px;
   border-radius: 16px;
   border: 1px solid #e2e8f0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 850px) {
+  .coloring-toolbar {
+    max-width: 380px;
+  }
 }
 
 .toolbar-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .toolbar-label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .palette-row,
@@ -171,43 +195,56 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
+/* Nút chọn màu to rõ cho ngón tay trên mobile */
 .palette-swatch {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 2px solid #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
 .palette-swatch--active {
-  transform: scale(1.15);
-  box-shadow: 0 0 0 2px #3b82f6;
+  transform: scale(1.18);
+  box-shadow: 0 0 0 3px #3b82f6;
+}
+
+.palette-swatch--custom {
+  position: relative;
+  overflow: hidden;
 }
 
 .palette-swatch--custom input[type="color"] {
-  opacity: 0;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
   cursor: pointer;
 }
 
+/* Nút công cụ chung */
 .brush-size-btn,
 .sticker-btn,
 .tool-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 8px;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 10px;
   border: 1px solid #cbd5e1;
   background: #ffffff;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #334155;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .brush-size-btn--active,
@@ -221,23 +258,24 @@
 .brush-size-dot {
   background: currentColor;
   border-radius: 50%;
-  display: inline-block;
 }
 
 .toolbar-group--actions {
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
 }
 
 .btn-primary {
+  grid-column: span 3;
   background: #10b981;
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 10px;
   font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -250,86 +288,92 @@
 .sticker-hint {
   font-size: 0.8rem;
   color: #0284c7;
-  margin-top: 4px;
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 .coloring-save-message {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #059669;
   font-weight: 600;
+  margin-top: 4px;
 }
 
-/* Modal Khoe Tranh */
+/* 5. Modal & Gallery */
 .share-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 1000;
   padding: 16px;
 }
 
 .share-modal {
   background: #ffffff;
-  padding: 24px;
+  padding: 20px;
   border-radius: 20px;
-  max-width: 480px;
+  max-width: 420px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .share-preview {
   width: 100%;
-  max-width: 360px;
+  max-width: 320px;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
 }
 
 .share-modal-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+  width: 100%;
 }
 
-/* Tranh lưu trong Thư viện */
+.share-modal-actions button {
+  flex: 1;
+}
+
 .coloring-gallery {
-  margin-top: 40px;
+  margin-top: 36px;
 }
 
 .coloring-gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 16px;
-  margin-top: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .gallery-item {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 8px;
+  border-radius: 10px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .gallery-item-thumb img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .gallery-item-delete {
   background: #ef4444;
   color: white;
   border: none;
-  padding: 4px 8px;
+  padding: 4px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   cursor: pointer;
 }
