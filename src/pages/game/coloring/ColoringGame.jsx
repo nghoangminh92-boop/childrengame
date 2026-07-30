@@ -75,8 +75,8 @@ const ColoringGame = () => {
     try {
       const { data } = await api.get("/coloring/mine");
       setGallery(data || []);
-    } catch (err) {
-      // Bỏ qua lỗi
+    } catch {
+      // Ignore network errors gracefully
     } finally {
       setGalleryLoading(false);
     }
@@ -107,6 +107,16 @@ const ColoringGame = () => {
     setPlacedStickers((prev) => prev.filter((s) => s.uid !== uid));
   };
 
+  // Helper to compile SVG into an HTML Image source robustly using Blob URLs
+  const createSvgImage = (rawSvg) => {
+    let formattedSvg = rawSvg || "";
+    if (!formattedSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
+      formattedSvg = formattedSvg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
+    }
+    const blob = new Blob([formattedSvg], { type: "image/svg+xml;charset=utf-8" });
+    return URL.createObjectURL(blob);
+  };
+
   const generateFullImageDataURL = () => {
     return new Promise((resolve) => {
       const baseCanvas = canvasRef.current?.getCanvasElement?.();
@@ -119,19 +129,14 @@ const ColoringGame = () => {
 
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
       ctx.drawImage(baseCanvas, 0, 0);
 
-      let rawSvg = selectedOutline.svg || "";
-      if (!rawSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
-        rawSvg = rawSvg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
-      }
-
+      const svgUrl = createSvgImage(selectedOutline.svg);
       const img = new Image();
-      const encodedSvg = encodeURIComponent(rawSvg);
 
       img.onload = () => {
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        URL.revokeObjectURL(svgUrl);
 
         placedStickers.forEach((s) => {
           ctx.font = "32px sans-serif";
@@ -144,10 +149,11 @@ const ColoringGame = () => {
       };
 
       img.onerror = () => {
+        URL.revokeObjectURL(svgUrl);
         resolve(baseCanvas.toDataURL("image/png"));
       };
 
-      img.src = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
+      img.src = svgUrl;
     });
   };
 
@@ -215,16 +221,12 @@ const ColoringGame = () => {
 
     ctx.drawImage(baseCanvas, PADDING, PADDING);
 
-    let rawSvg = selectedOutline.svg || "";
-    if (!rawSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
-      rawSvg = rawSvg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
-    }
-
+    const svgUrl = createSvgImage(selectedOutline.svg);
     const img = new Image();
-    const encodedSvg = encodeURIComponent(rawSvg);
 
     img.onload = () => {
       ctx.drawImage(img, PADDING, PADDING, CANVAS_SIZE, CANVAS_SIZE);
+      URL.revokeObjectURL(svgUrl);
 
       placedStickers.forEach((s) => {
         ctx.font = "32px sans-serif";
@@ -247,11 +249,12 @@ const ColoringGame = () => {
     };
 
     img.onerror = () => {
+      URL.revokeObjectURL(svgUrl);
       setShareImage(baseCanvas.toDataURL("image/png"));
       setShowShareModal(true);
     };
 
-    img.src = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
+    img.src = svgUrl;
   };
 
   const handleDownloadShare = () => {
@@ -323,8 +326,6 @@ const ColoringGame = () => {
             <svg
               className="coloring-outline-overlay"
               viewBox={selectedOutline.viewBox || "0 0 400 400"}
-              /* Decorative layer only — must never intercept pointer/touch
-                 events, otherwise clicks/taps never reach the canvas below. */
               style={{ pointerEvents: "none" }}
               dangerouslySetInnerHTML={{ __html: selectedOutline.svg }}
             />
