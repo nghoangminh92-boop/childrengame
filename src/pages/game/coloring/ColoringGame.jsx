@@ -76,7 +76,7 @@ const ColoringGame = () => {
       const { data } = await api.get("/coloring/mine");
       setGallery(data || []);
     } catch {
-      // Ignore network errors gracefully
+      // Bỏ qua lỗi kết nối
     } finally {
       setGalleryLoading(false);
     }
@@ -101,13 +101,16 @@ const ColoringGame = () => {
       ...prev,
       { uid: `${activeSticker.id}-${Date.now()}`, emoji: activeSticker.emoji, x, y },
     ]);
+
+    // Tự động hủy sticker sau khi dán 1 hình để tiếp tục vẽ
+    setActiveSticker(null);
+    setTool("brush");
   };
 
   const handleRemoveSticker = (uid) => {
     setPlacedStickers((prev) => prev.filter((s) => s.uid !== uid));
   };
 
-  // Helper to compile SVG into an HTML Image source robustly using Blob URLs
   const createSvgImage = (rawSvg) => {
     let formattedSvg = rawSvg || "";
     if (!formattedSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
@@ -322,16 +325,16 @@ const ColoringGame = () => {
             tool={tool}
             disabled={Boolean(activeSticker)}
           />
+
           {selectedOutline.svg && (
             <svg
               className="coloring-outline-overlay"
               viewBox={selectedOutline.viewBox || "0 0 400 400"}
-              style={{ pointerEvents: "none" }}
               dangerouslySetInnerHTML={{ __html: selectedOutline.svg }}
             />
           )}
 
-          <div className="coloring-stickers-layer" style={{ pointerEvents: activeSticker ? "none" : "auto" }}>
+          <div className="coloring-stickers-layer">
             {placedStickers.map((s) => (
               <button
                 key={s.uid}
