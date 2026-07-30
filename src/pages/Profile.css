@@ -2,7 +2,9 @@
 
 .profile-card {
   padding: 32px;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -17,7 +19,7 @@
   height: 200%;
   background: radial-gradient(
     circle,
-    var(--sakura-petal-a, rgba(245, 163, 179, 0.08)) 0%,
+    rgba(62, 198, 255, 0.08) 0%,
     transparent 60%
   );
   pointer-events: none;
@@ -41,20 +43,21 @@
   border-radius: 50%;
   margin: 0 auto 12px;
   object-fit: cover;
-  border: 3px solid var(--sakura-petal-a, #f5a3b3);
-  box-shadow: 0 6px 20px rgba(245, 163, 179, 0.35);
+  border: 3px solid var(--color-accent-sky);
+  box-shadow: 0 6px 20px rgba(62, 198, 255, 0.3);
 }
 
 .profile-card h1 {
+  font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--color-ink, #f5f5f5);
+  color: var(--color-text-dark);
   margin: 8px 0 4px;
 }
 
 .profile-subtitle {
   font-size: 0.85rem;
-  color: var(--color-ink-muted, rgba(255, 255, 255, 0.55));
+  color: var(--color-text-muted);
   margin-bottom: 4px;
 }
 
@@ -67,22 +70,23 @@
 }
 
 .stat-box {
-  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.1));
-  border-radius: 16px;
+  background: var(--color-surface-soft);
+  border: 1px solid #E3E9F5;
+  border-radius: var(--radius-md);
   padding: 18px 12px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .stat-box:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(27, 42, 74, 0.12);
 }
 
 .stat-box .value {
+  font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--sakura-petal-a, #f5a3b3);
+  color: var(--color-navy);
   margin-bottom: 4px;
   letter-spacing: -0.02em;
   overflow-wrap: anywhere;
@@ -90,7 +94,7 @@
 
 .stat-box div:last-child {
   font-size: 0.75rem;
-  color: var(--color-ink-muted, rgba(255, 255, 255, 0.5));
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -111,14 +115,11 @@
   padding: 8px 16px;
   border-radius: 999px;
   font-size: 0.8rem;
-  font-weight: 600;
-  background: linear-gradient(
-    135deg,
-    var(--sakura-petal-a, #f5a3b3),
-    var(--sakura-petal-b, #f7c6d0)
-  );
-  color: #2b1a1e;
-  box-shadow: 0 4px 14px rgba(245, 163, 179, 0.3);
+  font-weight: 700;
+  font-family: var(--font-display);
+  background: var(--color-accent-yellow);
+  color: var(--color-navy);
+  box-shadow: 0 4px 14px rgba(255, 201, 60, 0.35);
   animation: badgePop 0.4s ease-out backwards;
   cursor: default;
   white-space: nowrap;
@@ -144,16 +145,17 @@
 
 .badges-empty {
   font-size: 0.85rem;
-  color: var(--color-ink-muted, rgba(255, 255, 255, 0.4));
+  color: var(--color-text-muted);
   margin-top: 20px;
   font-style: italic;
 }
 
 /* ===== Leaderboard ===== */
 .profile-card h2 {
+  font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--color-ink, #f5f5f5);
+  color: var(--color-text-dark);
   margin-bottom: 20px;
   text-align: left;
 }
@@ -169,27 +171,27 @@
   align-items: center;
   gap: 8px;
   font-size: 0.92rem;
-  color: var(--color-ink, #f0f0f0);
+  color: var(--color-text-dark);
   transition: background 0.2s ease;
   padding: 8px 10px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 }
 
 .profile-card ol li:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--color-surface-soft);
 }
 
 .rank-number {
   flex-shrink: 0;
   width: 24px;
   font-weight: 700;
-  color: var(--color-ink-muted, rgba(255, 255, 255, 0.5));
+  color: var(--color-text-muted);
   text-align: center;
 }
 
-.rank-number--1 { color: #ffd166; }
-.rank-number--2 { color: #c0c0c0; }
-.rank-number--3 { color: #cd7f32; }
+.rank-number--1 { color: var(--color-accent-yellow); }
+.rank-number--2 { color: #A7B3CC; }
+.rank-number--3 { color: #C2865A; }
 
 .rank-name {
   flex: 1;
@@ -202,35 +204,11 @@
 .rank-score {
   flex-shrink: 0;
   font-weight: 700;
-  color: var(--sakura-petal-a, #f5a3b3);
-}
-
-/* ===== Light theme ===== */
-[data-theme="light"] .profile-card h1,
-[data-theme="light"] .profile-card h2 {
-  color: var(--color-ink, #202124);
-}
-
-[data-theme="light"] .profile-subtitle {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-[data-theme="light"] .stat-box {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .badge-chip {
-  color: #4a1f28;
-}
-
-[data-theme="light"] .rank-number {
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--color-accent-sky);
 }
 
 /* ===== Responsive ===== */
 
-/* Tablet: giảm padding một chút cho vừa vặn hơn */
 @media (max-width: 768px) {
   .profile-card {
     padding: 28px 22px;
@@ -259,7 +237,6 @@
     font-size: 1.05rem;
   }
 
-  /* Tăng vùng chạm hàng bảng xếp hạng — đề phòng mỗi hàng là link/clickable */
   .profile-card ol li {
     min-height: 44px;
   }
@@ -270,7 +247,6 @@
   }
 }
 
-/* Màn hình rất nhỏ (điện thoại phổ thông, iPhone SE...) */
 @media (max-width: 360px) {
   .profile-card {
     padding: 20px 14px;
@@ -309,7 +285,6 @@
   }
 }
 
-/* Tôn trọng người dùng bật "giảm hiệu ứng chuyển động" */
 @media (prefers-reduced-motion: reduce) {
   .profile-card::before,
   .badge-chip {

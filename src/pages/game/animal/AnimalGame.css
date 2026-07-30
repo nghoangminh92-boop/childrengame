@@ -70,6 +70,8 @@
   margin-bottom: 20px;
 }
 
+/* Thay thế phần .animal-card, .animal-name-card cũ bằng bản này trong AnimalGame.css */
+
 .animal-matching-columns {
   display: flex;
   justify-content: center;
@@ -84,15 +86,28 @@
 }
 
 .animal-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px; /* ⭐ chiều cao cố định, khớp với animal-name-card */
   background: white;
   border: 3px solid #E3E9F5;
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 12px;
   cursor: pointer;
   box-shadow: var(--shadow-card);
 }
-.animal-card img { width: 100%; border-radius: var(--radius-sm); }
-.animal-emoji { font-size: 2.2rem; }
+.animal-card img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* ⭐ giữ đúng tỉ lệ ảnh, không méo, không tràn */
+}
+.animal-emoji {
+  font-size: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .animal-card--selected {
   border-color: var(--color-accent-sky);
 }
@@ -102,14 +117,20 @@
 }
 
 .animal-name-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px; /* ⭐ khớp đúng .animal-card để 2 cột đều hàng nhau */
   background: white;
   border: 3px solid #E3E9F5;
   border-radius: var(--radius-md);
   padding: 14px;
   font-family: var(--font-body);
   font-weight: 700;
+  font-size: 1.05rem;
   cursor: pointer;
   box-shadow: var(--shadow-card);
+  text-align: center;
 }
 .animal-name-card--matched {
   background: var(--color-accent-mint);
@@ -121,6 +142,7 @@
   border-color: var(--color-danger);
   animation: shake 0.3s ease;
 }
+
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }

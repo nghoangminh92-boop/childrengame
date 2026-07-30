@@ -5,9 +5,10 @@
 }
 
 .subject-select h1 {
+  font-family: var(--font-display);
   font-size: 2rem;
   margin-bottom: 20px;
-  color: var(--color-text);
+  color: var(--color-text-dark);
 }
 
 .subject-grid {
@@ -18,22 +19,24 @@
 }
 
 .subject-grid button {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: var(--color-surface);
+  border: 2px solid #E3E9F5;
   padding: 18px 28px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
   font-size: 1.3rem;
+  font-weight: 700;
   cursor: pointer;
-  color: white;
+  color: var(--color-text-dark);
+  box-shadow: var(--shadow-card);
   transition: all 0.25s ease;
   min-width: 180px;
 }
 
 .subject-grid button:hover {
   transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: var(--color-accent-sky);
+  box-shadow: 0 12px 28px rgba(27, 42, 74, 0.15);
 }
 
 .subject-grid button:active {

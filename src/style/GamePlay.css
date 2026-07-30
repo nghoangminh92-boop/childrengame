@@ -35,26 +35,27 @@
   flex: 1;
   height: 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #E3E9F5;
   overflow: hidden;
-  min-width: 0; /* cho phép co lại trong flex container trên màn hẹp */
+  min-width: 0;
 }
 
 .progress-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+  background: linear-gradient(90deg, var(--color-accent-sky), var(--color-accent-mint));
   transition: width 0.4s ease;
 }
 
 .score-pill {
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(251, 191, 36, 0.18);
-  color: var(--color-warning);
+  background: #FFF3D0;
+  color: #B8860B;
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
+  font-family: var(--font-display);
 }
 
 .avatar-stage {
@@ -96,6 +97,9 @@
   margin: 0 auto;
   padding: 40px clamp(20px, 4vw, 48px);
   text-align: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -108,13 +112,13 @@
 }
 
 @keyframes flashGreen {
-  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); background: rgba(52, 211, 153, 0.25); }
-  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(76, 224, 179, 0); background: rgba(76, 224, 179, 0.15); }
+  100% { box-shadow: 0 0 0 0 rgba(76, 224, 179, 0); background: var(--color-surface); }
 }
 
 @keyframes flashRed {
-  0% { background: rgba(251, 113, 133, 0.28); }
-  100% { background: var(--glass-bg); }
+  0% { background: rgba(229, 72, 77, 0.15); }
+  100% { background: var(--color-surface); }
 }
 
 @keyframes shake {
@@ -125,9 +129,11 @@
 }
 
 .question-text {
+  font-family: var(--font-display);
   font-size: clamp(1.3rem, 3vw, 1.9rem);
   margin-bottom: 32px;
   font-weight: 800;
+  color: var(--color-text-dark);
 }
 
 .options-grid {
@@ -139,9 +145,9 @@
 .option-btn {
   padding: 18px 16px;
   border-radius: var(--radius-md);
-  border: 2px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--color-text);
+  border: 2px solid #E3E9F5;
+  background: var(--color-surface-soft);
+  color: var(--color-text-dark);
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
@@ -151,22 +157,21 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  /* đảm bảo vùng chạm tối thiểu 44px trên mọi kích thước */
   min-height: 44px;
 }
 
 .option-btn:hover:not(:disabled) {
-  border-color: var(--color-primary);
-  background: rgba(124, 92, 255, 0.15);
+  border-color: var(--color-accent-sky);
+  background: rgba(62, 198, 255, 0.12);
 }
 
 .option-btn.correct {
-  background: rgba(52, 211, 153, 0.25);
-  border-color: var(--color-success);
+  background: rgba(76, 224, 179, 0.18);
+  border-color: var(--color-accent-mint);
 }
 
 .option-btn.wrong {
-  background: rgba(251, 113, 133, 0.25);
+  background: rgba(229, 72, 77, 0.15);
   border-color: var(--color-danger);
 }
 
@@ -193,7 +198,6 @@
   100% { transform: scale(1); }
 }
 
-/* Tôn trọng người dùng bật "giảm hiệu ứng chuyển động" */
 @media (prefers-reduced-motion: reduce) {
   .heart-lost,
   .avatar-emoji.jump,
@@ -237,13 +241,12 @@
 .result-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5, 8, 16, 0.65);
+  background: rgba(27, 42, 74, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 40;
   padding: 20px;
-  /* cho phép cuộn nếu nội dung result-card cao hơn màn hình (bàn phím ảo, xoay ngang...) */
   overflow-y: auto;
 }
 
@@ -252,6 +255,9 @@
   width: 100%;
   padding: 40px 32px;
   text-align: center;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 48px rgba(27, 42, 74, 0.3);
   animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   margin: auto;
 }
@@ -279,14 +285,14 @@
 .result-progress-track {
   height: 16px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #E3E9F5;
   overflow: hidden;
   margin: 20px 0;
 }
 
 .result-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-secondary), var(--color-success));
+  background: linear-gradient(90deg, var(--color-accent-sky), var(--color-accent-mint));
   width: 0%;
   animation: fillProgress 1s ease forwards 0.3s;
 }
@@ -307,7 +313,6 @@
 
 /* ===================== RESPONSIVE ===================== */
 
-/* Tablet nhỏ */
 @media (max-width: 768px) {
   .game-container {
     padding: 20px 14px;
@@ -322,8 +327,6 @@
   }
 }
 
-/* Mobile: header dễ vỡ nhất — hearts + progress bar + score trên 1 hàng
-   thường bị bóp quá chật trên màn hẹp, cần giảm size từng phần */
 @media (max-width: 480px) {
   .game-container {
     padding: 16px 12px;
@@ -389,7 +392,6 @@
   }
 }
 
-/* Màn hình rất nhỏ (điện thoại phổ thông, iPhone SE...) */
 @media (max-width: 360px) {
   .hearts {
     font-size: 1rem;
@@ -415,8 +417,6 @@
   }
 }
 
-/* Xoay ngang / màn hình thấp: tránh khu vực avatar chiếm quá nhiều
-   chiều cao khi không gian dọc hạn chế */
 @media (max-height: 560px) {
   .avatar-stage {
     min-height: 90px;

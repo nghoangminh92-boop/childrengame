@@ -1,0 +1,75 @@
+/* ModeSelect.css */
+
+.mode-select-page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  text-align: center;
+}
+
+.mode-select-title {
+  font-family: var(--font-display);
+  color: var(--color-text-dark);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  margin-bottom: 32px;
+}
+
+.mode-select-options {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 16px 32px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  min-width: 220px;
+  justify-content: center;
+}
+
+.mode-btn:hover {
+  transform: translateY(-3px);
+}
+
+.mode-btn--quiz {
+  background: var(--color-accent-yellow);
+  color: var(--color-navy);
+  box-shadow: 0 6px 0 #D99A1A, 0 8px 16px rgba(0,0,0,0.15);
+}
+.mode-btn--quiz:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 0 #D99A1A;
+}
+
+.mode-btn--runner {
+  background: var(--color-surface);
+  color: var(--color-text-dark);
+  border: 2px solid var(--color-accent-sky);
+  box-shadow: var(--shadow-card);
+}
+
+@media (max-width: 480px) {
+  .mode-select-options {
+    flex-direction: column;
+    width: 100%;
+    max-width: 280px;
+  }
+  .mode-btn {
+    width: 100%;
+    min-width: 0;
+  }
+}

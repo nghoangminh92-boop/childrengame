@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-
+import "./ModeSelect.css";
 const ModeSelect = () => {
   const { subject, grade, level } = useParams();   // ⭐ thêm grade
 
