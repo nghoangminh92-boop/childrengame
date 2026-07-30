@@ -76,7 +76,7 @@ const ColoringGame = () => {
       const { data } = await api.get("/coloring/mine");
       setGallery(data || []);
     } catch (err) {
-      // Bỏ qua lỗi kết nối không quan trọng
+      // Bỏ qua lỗi
     } finally {
       setGalleryLoading(false);
     }
@@ -107,7 +107,6 @@ const ColoringGame = () => {
     setPlacedStickers((prev) => prev.filter((s) => s.uid !== uid));
   };
 
-  // Hàm xuất Base64 đã khắc phục lỗi ảnh trắng/rỗng
   const generateFullImageDataURL = () => {
     return new Promise((resolve) => {
       const baseCanvas = canvasRef.current?.getCanvasElement?.();
@@ -118,14 +117,11 @@ const ColoringGame = () => {
       exportCanvas.height = CANVAS_SIZE;
       const ctx = exportCanvas.getContext("2d");
 
-      // Fill nền trắng chống ảnh bị trong suốt/đen
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-      // Vẽ cọ
       ctx.drawImage(baseCanvas, 0, 0);
 
-      // Chuẩn hóa chuỗi SVG
       let rawSvg = selectedOutline.svg || "";
       if (!rawSvg.includes('xmlns="http://www.w3.org/2000/svg"')) {
         rawSvg = rawSvg.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
@@ -135,10 +131,8 @@ const ColoringGame = () => {
       const encodedSvg = encodeURIComponent(rawSvg);
 
       img.onload = () => {
-        // Vẽ viền
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        // Vẽ sticker
         placedStickers.forEach((s) => {
           ctx.font = "32px sans-serif";
           ctx.textAlign = "center";
@@ -418,7 +412,19 @@ const ColoringGame = () => {
                 </button>
               ))}
             </div>
-            {activeSticker && <p className="sticker-hint">Chạm vào tranh để đặt sticker ✨</p>}
+            {activeSticker ? (
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px" }}>
+                <p className="sticker-hint" style={{ margin: 0 }}>Chạm vào tranh để dán {activeSticker.emoji}</p>
+                <button
+                  type="button"
+                  className="tool-btn"
+                  style={{ padding: "2px 8px", fontSize: "0.75rem" }}
+                  onClick={() => setActiveSticker(null)}
+                >
+                  ✏️ Bật lại cọ vẽ
+                </button>
+              </div>
+            ) : null}
           </div>
 
           <div className="toolbar-group toolbar-group--actions">
